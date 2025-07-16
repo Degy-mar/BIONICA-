@@ -171,17 +171,17 @@
 
   <script>
      const materias = [
-      { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas','Funciones y límites','Derivadas','Integrales','Series'], semestre:1, deps:[], categoria:'matematicas' },
-      { id:'algebra', nombre:'Álgebra Lineal', creditos:7.5, temario:['Sistemas de ecuaciones','Espacios vectoriales','Transformaciones lineales'], semestre:1, deps:[], categoria:'matematicas' },
-      { id:'biocel', nombre:'Biología Celular', creditos:7.5, temario:['Estructura celular','Genética','Función celular'], semestre:1, deps:[], categoria:'biologia' },
-      { id:'quimica', nombre:'Química Orgánica', creditos:7.5, temario:['Hidrocarburos','Carbohidratos','Aminoácidos'], semestre:1, deps:[], categoria:'quimica' },
-      { id:'metrologia', nombre:'Metrología', creditos:6, temario:['Mediciones eléctricas','Mediciones mecánicas'], semestre:1, deps:[], categoria:'otros' },
-      { id:'bioetica', nombre:'Bioética', creditos:4.5, temario:['Dilemas','Medioambiente','Cultura tecnocientífica'], semestre:1, deps:[], categoria:'bioetica' },
+      { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas de los números reales y complejos, funciones y límites.','Cálculo Diferencial y sus aplicaciones.','Cálculo Integral y sus aplicaciones.','Sucesiones y Series.'], semestre:1, deps:[], categoria:'matematicas' },
+      { id:'algebra', nombre:'Álgebra Lineal', creditos:7.5, temario:['Sistemas de ecuaciones lineales','Espacios vectoriales','Transformaciones lineales','Valores propios y vectores propios','Espacios con prducto interior'], semestre:1, deps:[], categoria:'matematicas' },
+      { id:'biocel', nombre:'Biología Celular', creditos:7.5, temario:['Fundamentos físicos y químicos.','Estructura celular.','Almacenamiento y expresión de la información genética.','Función celular.','Bases de fisiología y anatomía.'], semestre:1, deps:[], categoria:'biologia' },
+      { id:'quimica', nombre:'Química Orgánica', creditos:7.5, temario:['Introducción a la Química Orgánica.','Hidrocarburos.','Derivados de los hidrocarburos.','Carbohidratos.','Aminoácidos y proteínas'], semestre:1, deps:[], categoria:'quimica' },
+      { id:'metrologia', nombre:'Metrología', creditos:6, temario:['Generalidades.','Mediciones Eléctrica.','Mediciones Mecánicas.','Mediciones de Temperatura.'], semestre:1, deps:[], categoria:'otros' },
+      { id:'bioetica', nombre:'Bioética', creditos:4.5, temario:['Campo teórico de la bioética.','Dilemas bioéticos.','Bioética y medioambiente.','La cultura tecnocientífica.'], semestre:1, deps:[], categoria:'bioetica' },
     
-      { id:'herramientas', nombre:'Herramientas Computacionales', creditos:6, temario:['Matlab','Inventor','CAD'], semestre:2, deps:[], categoria:'otros' },
-      { id:'vectorial', nombre:'Cálculo Vectorial', creditos:9, temario:['Funciones varias variables','Cálculo diferencial','Integral de múltiples variables'], semestre:2, deps:['calculo'], categoria:'matematicas' },
-      { id:'anatomia', nombre:'Anatomía', creditos:7.5, temario:['Osteología','Artrología','Miología'], semestre:2, deps:[], categoria:'biologia' },
-      { id:'fisica', nombre:'Fundamentos de Física para la Ingeniería', creditos:9, temario:['Cinemática','Leyes de Newton','Conservación','Partículas'], semestre:2, deps:[], categoria:'fisica' },
+      { id:'herramientas', nombre:'Herramientas Computacionales', creditos:6, temario:['Fundamentos básicos de los lenguajes de programación.','Uso de herramientas básicas en los leguajes de programación.','Fundamentos del Dibujo e Introducción al CAD,CAM,CAE.','Diseño en 2D.','Diseño en 3D y Documentación.'], semestre:2, deps:[], categoria:'otros' },
+      { id:'vectorial', nombre:'Cálculo Vectorial', creditos:9, temario:['Funciones reales de varias variables.','Cálculo diferencial de funciones reales de varias variables.','Cálculo integral de funciones reales de varias variables.','Funciones vectoriales de variable real.','Cálculo vectorial.'], semestre:2, deps:['calculo'], categoria:'matematicas' },
+      { id:'anatomia', nombre:'Anatomía', creditos:7.5, temario:['Introducción.','Historia.','Generalidades.','Osteología.','Artrología.','Miología.','Sistema nervioso.','Corazón y grandes vasos.'], semestre:2, deps:[], categoria:'biologia' },
+      { id:'fisica', nombre:'Fundamentos de Física para la Ingeniería', creditos:9, temario:['Cinemática.','Las Leyes de Newton y sus aplicaciones.','Leyes de conservación.','Sistemas de partículas.','Aplicaciones de la Mecánica a la biónica.'], semestre:2, deps:[], categoria:'fisica' },
       { id:'ingles1', nombre:'Inglés 1', creditos:3, temario:[], semestre:2, deps:[], categoria:'otros' },
       { id:'biomol', nombre:'Biología Molecular', creditos:7.5, temario:['Replicación ADN','Expresión genética'], semestre:2, deps:['biocel'], categoria:'biologia' },
       { id:'ecuaciones', nombre:'Ecuaciones Diferenciales', creditos:7.5, temario:['Orden superior','Laplace'], semestre:2, deps:['calculo','algebra'], categoria:'matematicas' },
