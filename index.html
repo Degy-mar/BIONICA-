@@ -5,137 +5,129 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Malla Curricular Biónica</title>
   <style>
-  body {
-    font-family: sans-serif;
-    background: #f5f5f5;
-    margin: 0;
-    padding: 10px;
-    overflow-x: hidden;
-  }
+    body {
+      font-family: sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 10px;
+    }
 
-  h1 {
-    text-align: center;
-    font-size: 22px;
-    margin-bottom: 10px;
-  }
+    h1 {
+      text-align: center;
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
 
-  .años-container {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 10px;
-    scroll-behavior: smooth;
-  }
+    .años-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
 
-  .años-container::-webkit-scrollbar {
-    height: 8px;
-  }
+    .fila {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
 
-  .años-container::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 4px;
-  }
+    .semestre-card {
+      background: #fef6e4;
+      border-radius: 8px;
+      padding: 6px;
+      width: 180px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
 
-  .semestre-card {
-    flex: 0 0 auto;
-    background: #fef6e4;
-    border-radius: 8px;
-    padding: 6px;
-    width: 200px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+    .semestre-title {
+      font-weight: bold;
+      font-size: 14px;
+      text-align: center;
+      background-color: #f1ddbb;
+      padding: 5px;
+      border-radius: 8px 8px 0 0;
+      color: #4b2e2e;
+    }
 
-  .semestre-title {
-    font-weight: bold;
-    font-size: 14px;
-    text-align: center;
-    background-color: #f1ddbb;
-    padding: 5px;
-    border-radius: 8px 8px 0 0;
-    color: #4b2e2e;
-  }
+    .subject {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 4px 2px;
+      padding: 4px 6px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
 
-  .subject {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 4px 2px;
-    padding: 4px 6px;
-    border-radius: 6px;
-    font-size: 11px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
+    .subject.locked {
+      opacity: 0.4;
+      pointer-events: none;
+    }
 
-  .subject.locked {
-    opacity: 0.4;
-    pointer-events: none;
-  }
+    .subject .info.aprobada {
+      text-decoration: line-through;
+    }
 
-  .subject .info.aprobada {
-    text-decoration: line-through;
-  }
+    .credits {
+      width: 22px;
+      height: 22px;
+      font-size: 10px;
+      border-radius: 50%;
+      background: white;
+      border: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
 
-  .credits {
-    width: 22px;
-    height: 22px;
-    font-size: 10px;
-    border-radius: 50%;
-    background: white;
-    border: 1px solid #ccc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    flex-shrink: 0;
-  }
+    .temario {
+      margin-left: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
 
-  .temario {
-    margin-left: 4px;
-    cursor: pointer;
-    font-size: 13px;
-    flex-shrink: 0;
-  }
+    .matematicas    { background: #748DAE; }
+    .biologia       { background: #4A9782; }
+    .quimica        { background: #E07A5F; }
+    .electronica    { background: #FFCDB2; }
+    .fisica         { background: #ADB2D4; }
+    .bioetica       { background: #DCC5B2; }
+    .otros          { background: #999; color: white; }
 
-  .matematicas    { background: #748DAE; }
-  .biologia       { background: #4A9782; }
-  .quimica        { background: #E07A5F; }
-  .electronica    { background: #FFCDB2; }
-  .fisica         { background: #ADB2D4; }
-  .bioetica       { background: #DCC5B2; }
-  .otros          { background: #999; color: white; }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
 
-  .modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    right: 0; bottom: 0;
-    background: rgba(0,0,0,0.6);
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-  }
+    .modal-content {
+      background: #fff;
+      padding: 16px;
+      border-radius: 10px;
+      max-width: 360px;
+      text-align: center;
+    }
 
-  .modal-content {
-    background: #fff;
-    padding: 16px;
-    border-radius: 10px;
-    max-width: 360px;
-    text-align: center;
-  }
-
-  button {
-    margin-top: 10px;
-    padding: 6px 12px;
-    border: none;
-    background: #4b2e2e;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-</style>
-
+    button {
+      margin-top: 10px;
+      padding: 6px 12px;
+      border: none;
+      background: #4b2e2e;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <h1>Malla Curricular Biónica (UPIITA-IPN)</h1>
@@ -227,6 +219,12 @@
       const contenedor = document.getElementById('malla');
       contenedor.innerHTML = '';
 
+      const fila1 = document.createElement('div');
+      fila1.className = 'fila';
+
+      const fila2 = document.createElement('div');
+      fila2.className = 'fila';
+
       for (let s = 1; s <= 10; s++) {
         const semestreMaterias = materias.filter(m => m.semestre === s);
         if (semestreMaterias.length === 0) continue;
@@ -271,8 +269,15 @@
           card.appendChild(materiaDiv);
         });
 
-        contenedor.appendChild(card);
+        if (s <= 5) {
+          fila1.appendChild(card);
+        } else {
+          fila2.appendChild(card);
+        }
       }
+
+      contenedor.appendChild(fila1);
+      contenedor.appendChild(fila2);
     }
 
     function toggleAprob(id) {
@@ -297,4 +302,5 @@
   </script>
 </body>
 </html>
+
 
