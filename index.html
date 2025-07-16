@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Malla Curricular Biónica</title>
 <style>
   body {
@@ -18,7 +18,7 @@
   }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
   }
   .subject {
@@ -40,7 +40,6 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: #ccc;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -73,17 +72,14 @@
     cursor: pointer;
     font-size: 18px;
   }
-  /* Colores por categoría */
   .matematicas { background: #748DAE; }
+  .matematicas-claro { background: #9ECAD6; }
   .biologia { background: #4A9782; }
   .quimica { background: #E07A5F; }
-  .computacion { background: #9ECAD6; }
   .electronica { background: #FFCDB2; }
-  .bioetica, .desarrollo, .liderazgo { background: #DCC5B2; }
-  .fisica, .biofisica { background: #ADB2D4; }
+  .fisica { background: #ADB2D4; }
+  .bioetica { background: #DCC5B2; }
   .otros { background: #999; }
-
-  /* Modal */
   .modal {
     display: none;
     position: fixed;
@@ -102,7 +98,7 @@
 </style>
 </head>
 <body>
-<h1>Malla Curricular Biónica (UPIITA - IPN)</h1>
+<h1>Malla Curricular Biónica (UPIITA-IPN)</h1>
 <div id="malla" class="grid"></div>
 <div id="modal" class="modal">
   <div class="modal-content">
@@ -112,16 +108,8 @@
   </div>
 </div>
 <script>
-const materias = [
-  // Ejemplo. Esto se llenaría con TODAS las materias extraídas del PDF y del temario inicial
-  { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas','Derivadas','Integrales'], semestre:1, deps:[], categoria:'matematicas' },
-  { id:'algebra', nombre:'Álgebra Lineal', creditos:7.5, temario:['Sistemas','Espacios'], semestre:1, deps:[], categoria:'matematicas' },
-  { id:'bio', nombre:'Biología Celular', creditos:7.5, temario:['Estructura celular'], semestre:1, deps:[], categoria:'biologia' },
-  { id:'ecuaciones', nombre:'Ecuaciones Diferenciales', creditos:7.5, temario:['Primer orden'], semestre:2, deps:['algebra','calculo'], categoria:'matematicas' },
-  { id:'bioquimica', nombre:'Bioquímica', creditos:6, temario:['Proteínas'], semestre:4, deps:['bio','quimica'], categoria:'biologia' },
-];
+const materias = [ /* aquí irían TODAS tus materias cargadas */ ];
 const aprobadas = JSON.parse(localStorage.getItem('aprobadas')||'[]');
-
 function render() {
   const container = document.getElementById('malla');
   container.innerHTML = '';
@@ -132,20 +120,16 @@ function render() {
     div.className = 'subject' + (pendientes.length? ' locked':'');
     div.setAttribute('data-tooltip', pendientes.length? 'Falta: '+pendientes.join(', '):'');
     div.onclick = ()=>toggleAprob(m.id);
-
     const circle = document.createElement('div');
     circle.className = 'credits ' + m.categoria;
     circle.textContent = m.creditos;
-
     const info = document.createElement('div');
     info.className = 'info';
     info.textContent = m.nombre;
-
     const tem = document.createElement('span');
     tem.className = 'temario';
     tem.innerHTML = '📄';
     tem.onclick = (e)=>{ e.stopPropagation(); showTemario(m.temario); };
-
     div.appendChild(circle);
     div.appendChild(info);
     div.appendChild(tem);
@@ -153,7 +137,6 @@ function render() {
     if(aprob) div.style.opacity=1;
   });
 }
-
 function toggleAprob(id) {
   const idx = aprobadas.indexOf(id);
   if(idx>=0) aprobadas.splice(idx,1);
@@ -161,7 +144,6 @@ function toggleAprob(id) {
   localStorage.setItem('aprobadas',JSON.stringify(aprobadas));
   render();
 }
-
 function showTemario(temario) {
   const content = document.getElementById('temarioContent');
   content.innerHTML = temario.length ? '<ul>' + temario.map(t=>'<li>'+t+'</li>').join('')+'</ul>' : 'No existe';
@@ -170,9 +152,7 @@ function showTemario(temario) {
 function closeModal() {
   document.getElementById('modal').style.display = 'none';
 }
-
 render();
 </script>
 </body>
 </html>
-
