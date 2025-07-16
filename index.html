@@ -11,18 +11,76 @@
 <div id="malla" class="grid"></div>
 <div id="modal" class="modal"><div class="modal-content"><h3>Temario</h3><div id="temarioContent"></div><button onclick="closeModal()">Cerrar</button></div></div>
 <script>
-const materias = [
-  { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas','Funciones','Derivadas','Integrales','Series'], semestre:1, deps:[], categoria:'matematicas' },
-  { id:'algebra', nombre:'Álgebra Lineal', creditos:7.5, temario:['Sistemas','Espacios Vectoriales'], semestre:1, deps:[], categoria:'matematicas' },
-  { id:'biocel', nombre:'Biología Celular', creditos:7.5, temario:['Estructura','Genética'], semestre:1, deps:[], categoria:'biologia' },
-  { id:'quimica', nombre:'Química Orgánica', creditos:7.5, temario:['Hidrocarburos','Carbohidratos'], semestre:1, deps:[], categoria:'quimica' },
-  { id:'ecuaciones', nombre:'Ecuaciones Diferenciales', creditos:7.5, temario:['1er orden','Laplace'], semestre:2, deps:['algebra','calculo'], categoria:'matematicas' },
-  { id:'bioquimica', nombre:'Bioquímica', creditos:6, temario:['Proteínas','Ácidos nucleicos'], semestre:4, deps:['biocel','quimica'], categoria:'biologia' },
-  { id:'analisis', nombre:'Análisis Numérico', creditos:9, temario:['Interpolación','EDO'], semestre:4, deps:['algebra','calculo'], categoria:'matematicas' },
-  { id:'biofisica', nombre:'Biofísica', creditos:6, temario:['Bioeléctrica','Sentidos'], semestre:6, deps:['biocel'], categoria:'fisica' },
-  { id:'control', nombre:'Teoría del Control', creditos:7.5, temario:['Controladores','Digital'], semestre:6, deps:['analisis'], categoria:'matematicas' },
-  { id:'biorobotica', nombre:'Biorobótica', creditos:6, temario:['Robots biónicos'], semestre:9, deps:['control','biofisica'], categoria:'electronica' }
-  // ... aquí seguirían las 60+ materias del plan completo
+ const materias = [
+  { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas','Funciones y límites','Derivadas','Integrales','Series'], semestre:1, deps:[], categoria:'matematicas' },
+  { id:'algebra', nombre:'Álgebra Lineal', creditos:7.5, temario:['Sistemas de ecuaciones','Espacios vectoriales','Transformaciones lineales'], semestre:1, deps:[], categoria:'matematicas' },
+  { id:'biocel', nombre:'Biología Celular', creditos:7.5, temario:['Estructura celular','Genética','Función celular'], semestre:1, deps:[], categoria:'biologia' },
+  { id:'quimica', nombre:'Química Orgánica', creditos:7.5, temario:['Hidrocarburos','Carbohidratos','Aminoácidos'], semestre:1, deps:[], categoria:'quimica' },
+  { id:'metrologia', nombre:'Metrología', creditos:6, temario:['Mediciones eléctricas','Mediciones mecánicas'], semestre:1, deps:[], categoria:'otros' },
+  { id:'bioetica', nombre:'Bioética', creditos:4.5, temario:['Dilemas','Medioambiente','Cultura tecnocientífica'], semestre:1, deps:[], categoria:'bioetica' },
+
+  { id:'herramientas', nombre:'Herramientas Computacionales', creditos:6, temario:['Matlab','Inventor','CAD'], semestre:2, deps:[], categoria:'otros' },
+  { id:'vectorial', nombre:'Cálculo Vectorial', creditos:9, temario:['Funciones varias variables','Cálculo diferencial','Integral de múltiples variables'], semestre:2, deps:['calculo'], categoria:'matematicas' },
+  { id:'anatomia', nombre:'Anatomía', creditos:7.5, temario:['Osteología','Artrología','Miología'], semestre:2, deps:[], categoria:'biologia' },
+  { id:'fisica', nombre:'Fundamentos de Física para la Ingeniería', creditos:9, temario:['Cinemática','Leyes de Newton','Conservación','Partículas'], semestre:2, deps:[], categoria:'fisica' },
+  { id:'ingles1', nombre:'Inglés 1', creditos:3, temario:[], semestre:2, deps:[], categoria:'otros' },
+  { id:'biomol', nombre:'Biología Molecular', creditos:7.5, temario:['Replicación ADN','Expresión genética'], semestre:2, deps:['biocel'], categoria:'biologia' },
+  { id:'ecuaciones', nombre:'Ecuaciones Diferenciales', creditos:7.5, temario:['Orden superior','Laplace'], semestre:2, deps:['calculo','algebra'], categoria:'matematicas' },
+
+  { id:'poo', nombre:'Programación Orientada a Objetos', creditos:6, temario:['Java','Clases y objetos'], semestre:3, deps:[], categoria:'otros' },
+  { id:'electro', nombre:'Fund. Teoría Electromagnética', creditos:9, temario:['Electrostática','Magnetostática'], semestre:3, deps:['fisica'], categoria:'fisica' },
+  { id:'desarrollo', nombre:'Desarrollo Sostenible', creditos:6, temario:['Contaminación','Recursos naturales'], semestre:3, deps:[], categoria:'bioetica' },
+  { id:'fisicoq', nombre:'Fisicoquímica', creditos:6, temario:['Termodinámica','Equilibrio químico'], semestre:3, deps:['quimica'], categoria:'quimica' },
+  { id:'fisiologia', nombre:'Fisiología', creditos:4.5, temario:['Cardiaca','Respiratoria'], semestre:3, deps:['anatomia'], categoria:'biologia' },
+  { id:'circuitos', nombre:'Teoría de los Circuitos', creditos:9, temario:[], semestre:3, deps:[], categoria:'electronica' },
+  { id:'ingles2', nombre:'Inglés 2', creditos:3, temario:[], semestre:3, deps:['ingles1'], categoria:'otros' },
+
+  { id:'bioestadistica', nombre:'Bioestadística', creditos:9, temario:['Probabilidad','Inferencia'], semestre:4, deps:[], categoria:'matematicas' },
+  { id:'bioquimica', nombre:'Bioquímica', creditos:6, temario:['Metabolismo proteínas y carbohidratos'], semestre:4, deps:['biomol','quimica'], categoria:'biologia' },
+  { id:'fundmat', nombre:'Fund. Matemáticos Ing.', creditos:4.5, temario:['Funciones complejas'], semestre:4, deps:['vectorial','ecuaciones'], categoria:'matematicas' },
+  { id:'ondas', nombre:'Ondas Electromagnéticas y Sistemas', creditos:7.5, temario:['Maxwell','Radiación'], semestre:4, deps:['electro'], categoria:'fisica' },
+  { id:'calidad', nombre:'Sist. Gestión de Calidad', creditos:4.5, temario:['Kaizen','ISO 9000'], semestre:4, deps:[], categoria:'otros' },
+  { id:'analisis', nombre:'Análisis Numérico', creditos:9, temario:['Interpolación','EDO'], semestre:4, deps:['ecuaciones','fundmat'], categoria:'matematicas' },
+  { id:'dispositivos', nombre:'Dispositivos Electrónicos', creditos:6, temario:['Diodos','BJTs','JFETs'], semestre:4, deps:['metrologia'], categoria:'electronica' },
+  { id:'ingles3', nombre:'Inglés 3', creditos:3, temario:[], semestre:4, deps:['ingles2'], categoria:'otros' },
+
+  { id:'biognosis', nombre:'Biógnosis', creditos:7.5, temario:['Simulación biomimética'], semestre:5, deps:['bioquimica','fisiologia'], categoria:'biologia' },
+  { id:'optica', nombre:'Física Moderna y Óptica', creditos:7.5, temario:['Óptica geométrica','Difracción'], semestre:5, deps:['ondas'], categoria:'fisica' },
+  { id:'analpot', nombre:'Electrónica Analógica y Potencia', creditos:7.5, temario:['Amplificadores'], semestre:5, deps:['circuitos'], categoria:'electronica' },
+  { id:'digital', nombre:'Electrónica Digital', creditos:7.5, temario:['Combinacionales','Secuenciales'], semestre:5, deps:['circuitos'], categoria:'electronica' },
+  { id:'sensores', nombre:'Sensores y Actuadores', creditos:6, temario:[], semestre:5, deps:[], categoria:'electronica' },
+  { id:'biomag', nombre:'Biomagnetismo', creditos:7.5, temario:['Campos magnéticos en bio'], semestre:5, deps:['fisicoq','electro'], categoria:'fisica' },
+  { id:'mecanismos', nombre:'Mecanismos Biomiméticos', creditos:6, temario:['Análisis cinemático'], semestre:5, deps:[], categoria:'electronica' },
+
+  { id:'biofisica', nombre:'Biofísica', creditos:6, temario:['Fenómenos bioeléctricos'], semestre:6, deps:['biognosis','biomag'], categoria:'fisica' },
+  { id:'liderazgo', nombre:'Liderazgo y Emprendedores', creditos:4.5, temario:['Habilidades interpersonales'], semestre:6, deps:[], categoria:'otros' },
+  { id:'biomateriales', nombre:'Biomateriales', creditos:7.5, temario:['Sustitución de tejidos'], semestre:6, deps:['bioquimica'], categoria:'biologia' },
+  { id:'control', nombre:'Teoría del Control', creditos:7.5, temario:['Control digital'], semestre:6, deps:['fundmat','analisis'], categoria:'matematicas' },
+  { id:'imagenes', nombre:'Procesamiento de Imágenes', creditos:6, temario:['Filtrado','Segmentación'], semestre:6, deps:['poo'], categoria:'electronica' },
+  { id:'programables', nombre:'Dispositivos Programables', creditos:6, temario:[], semestre:6, deps:['digital'], categoria:'electronica' },
+  { id:'esfuerzos', nombre:'Análisis de Esfuerzos', creditos:6, temario:['Estructuras'], semestre:6, deps:[], categoria:'otros' },
+
+  { id:'proyectos', nombre:'Investigación y Desarrollo', creditos:4.5, temario:['Proyectos en biónica'], semestre:7, deps:[], categoria:'otros' },
+  { id:'neurodifuso', nombre:'Control Neurodifuso', creditos:6, temario:['Sistemas difusos','Neuronales'], semestre:7, deps:['control','programables'], categoria:'matematicas' },
+  { id:'psbiologicas', nombre:'Procesamiento de Señales Biológicas', creditos:6, temario:[], semestre:7, deps:['biofisica'], categoria:'electronica' },
+  { id:'bioinstr', nombre:'Bioinstrumentación', creditos:7.5, temario:[], semestre:7, deps:['psbiologicas'], categoria:'electronica' },
+  { id:'modelado', nombre:'Modelado y Control de Sistemas Biónicos', creditos:6, temario:['Modelado'], semestre:7, deps:['neurodifuso'], categoria:'electronica' },
+  { id:'manufactura', nombre:'Manufactura de Biomiméticos', creditos:6, temario:['Fabricación'], semestre:7, deps:['mecanismos'], categoria:'electronica' },
+  { id:'patrones', nombre:'Reconocimiento de Patrones', creditos:6, temario:['Clasificación'], semestre:7, deps:['imagenes'], categoria:'electronica' },
+
+  { id:'opt1', nombre:'Optativa 1', creditos:6, temario:[], semestre:8, deps:[], categoria:'otros' },
+  { id:'opt2', nombre:'Optativa 2', creditos:6, temario:[], semestre:8, deps:['opt1'], categoria:'otros' },
+  { id:'normas', nombre:'Normatividad y Gestión', creditos:4.5, temario:[], semestre:8, deps:[], categoria:'otros' },
+  { id:'investigacion', nombre:'Metodología de Investigación', creditos:4.5, temario:[], semestre:8, deps:[], categoria:'otros' },
+  { id:'biomecanica', nombre:'Biomecánica', creditos:6, temario:['Fuerzas en organismos'], semestre:8, deps:['esfuerzos'], categoria:'electronica' },
+  { id:'bioelectronica', nombre:'Bioelectrónica', creditos:6, temario:['Dispositivos bio'], semestre:8, deps:['patrones'], categoria:'electronica' },
+
+  { id:'opt3', nombre:'Optativa 3', creditos:6, temario:[], semestre:9, deps:['opt2'], categoria:'otros' },
+  { id:'biorobotica', nombre:'Biorobótica', creditos:6, temario:['Robots bioinspirados'], semestre:9, deps:['modelado'], categoria:'electronica' },
+  { id:'trabajoi', nombre:'Trabajo Terminal I', creditos:7.5, temario:['Proyecto terminal'], semestre:9, deps:['proyectos'], categoria:'otros' },
+
+  { id:'trabajoii', nombre:'Trabajo Terminal II', creditos:7.5, temario:['Desarrollo final'], semestre:10, deps:['trabajoi'], categoria:'otros' }\n];\n``` 
+
 ];
 const aprobadas = JSON.parse(localStorage.getItem('aprobadas')||'[]');
 function render(){const c=document.getElementById('malla');c.innerHTML='';materias.forEach(m=>{const a=aprobadas.includes(m.id),p=m.deps.filter(d=>!aprobadas.includes(d)),d=document.createElement('div');d.className='subject'+(p.length?' locked':'');d.setAttribute('data-tooltip',p.length?'Falta: '+p.join(', '):'');d.onclick=()=>toggleAprob(m.id);const s=document.createElement('div');s.className='credits '+m.categoria;s.textContent=m.creditos;const i=document.createElement('div');i.className='info';i.textContent=m.nombre;const t=document.createElement('span');t.className='temario';t.innerHTML='📄';t.onclick=e=>{e.stopPropagation();showTemario(m.temario)};d.appendChild(s);d.appendChild(i);d.appendChild(t);c.appendChild(d);if(a)d.style.opacity=1;});}
