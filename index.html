@@ -13,82 +13,78 @@
 
     h1 {
       text-align: center;
+      margin-bottom: 30px;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 15px;
+    .semestre {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 15px;
+      margin-bottom: 20px;
     }
 
-    .subject {
+    .semestre h2 {
+      background: #f5e6c8;
+      color: #5c3d00;
+      margin: -15px -15px 10px -15px;
+      padding: 15px;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      text-align: center;
+    }
+
+    .materia {
       display: flex;
       align-items: center;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      background: #f9f7ff;
+      border: 1px solid #d6b7f5;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 10px;
       cursor: pointer;
-      position: relative;
-      transition: transform 0.2s;
+      transition: background 0.2s;
     }
 
-    .subject:hover {
-      transform: scale(1.02);
-    }
-
-    .subject.aprobada {
-      background-color: #d4edda !important;
-      text-decoration: line-through;
+    .materia.locked {
+      background: #eee;
+      pointer-events: none;
+      color: #aaa;
     }
 
     .credits {
       flex-shrink: 0;
       width: 40px;
       height: 40px;
-      border-radius: 50%;
+      border-radius: 12px;
+      background: white;
+      border: 2px solid #d6b7f5;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-right: 10px;
       font-weight: bold;
-      background-color: white;
-      color: black;
+      margin-right: 10px;
     }
 
     .info {
       flex: 1;
     }
 
-    .subject[data-tooltip]:hover::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      top: -5px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-100%);
-      background: #333;
-      color: #fff;
-      padding: 5px;
-      border-radius: 5px;
-      font-size: 12px;
-      white-space: nowrap;
+    .info.aprobada {
+      text-decoration: line-through;
+      color: #333;
     }
 
     .temario {
       margin-left: 8px;
-      cursor: pointer;
       font-size: 18px;
-    }
-
-    .locked {
-      opacity: 0.4;
-      pointer-events: none;
+      cursor: pointer;
     }
 
     .modal {
       display: none;
       position: fixed;
-      top: 0; left: 0;
-      right: 0; bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.6);
       justify-content: center;
       align-items: center;
@@ -101,19 +97,11 @@
       max-width: 400px;
       text-align: center;
     }
-
-    .matematicas { background: #748DAE; }
-    .biologia    { background: #4A9782; }
-    .quimica     { background: #E07A5F; }
-    .electronica { background: #FFCDB2; }
-    .fisica      { background: #ADB2D4; }
-    .bioetica    { background: #DCC5B2; }
-    .otros       { background: #999; }
   </style>
 </head>
 <body>
   <h1>Malla Curricular Biónica (UPIITA-IPN)</h1>
-  <div id="malla" class="grid"></div>
+  <div id="contenedor"></div>
 
   <div id="modal" class="modal">
     <div class="modal-content">
@@ -145,56 +133,52 @@
 
     const aprobadas = JSON.parse(localStorage.getItem('aprobadas') || '[]');
 
-    function getColor(categoria) {
-      const colores = {
-        matematicas: '#748DAE',
-        biologia: '#4A9782',
-        quimica: '#E07A5F',
-        electronica: '#FFCDB2',
-        fisica: '#ADB2D4',
-        bioetica: '#DCC5B2',
-        otros: '#999'
-      };
-      return colores[categoria] || '#ccc';
-    }
-
     function render() {
-      const contenedor = document.getElementById('malla');
-      contenedor.innerHTML = '';
+      const cont = document.getElementById('contenedor');
+      cont.innerHTML = '';
 
-      materias.forEach(m => {
-        const esAprobada = aprobadas.includes(m.id);
-        const depsFaltantes = m.deps.filter(d => !aprobadas.includes(d));
+      for (let s = 1; s <= 10; s++) {
+        const bloque = document.createElement('div');
+        bloque.className = 'semestre';
 
-        const div = document.createElement('div');
-        div.className = 'subject';
-        if (depsFaltantes.length) div.classList.add('locked');
-        if (esAprobada) div.classList.add('aprobada');
-        div.setAttribute('data-tooltip', depsFaltantes.length ? 'Falta: ' + depsFaltantes.join(', ') : '');
-        div.style.backgroundColor = getColor(m.categoria);
-        div.onclick = () => toggleAprob(m.id);
+        const h2 = document.createElement('h2');
+        h2.textContent = 'Semestre ' + s;
+        bloque.appendChild(h2);
 
-        const circulo = document.createElement('div');
-        circulo.className = 'credits';
-        circulo.textContent = m.creditos;
+        materias.filter(m => m.semestre === s).forEach(m => {
+          const div = document.createElement('div');
+          div.className = 'materia';
 
-        const nombre = document.createElement('div');
-        nombre.className = 'info';
-        nombre.textContent = m.nombre;
+          const bloqueada = m.deps.some(d => !aprobadas.includes(d));
+          if (bloqueada) div.classList.add('locked');
 
-        const iconoTemario = document.createElement('span');
-        iconoTemario.className = 'temario';
-        iconoTemario.innerHTML = '📄';
-        iconoTemario.onclick = (e) => {
-          e.stopPropagation();
-          showTemario(m.temario);
-        };
+          const circulo = document.createElement('div');
+          circulo.className = 'credits';
+          circulo.textContent = m.creditos;
 
-        div.appendChild(circulo);
-        div.appendChild(nombre);
-        div.appendChild(iconoTemario);
-        contenedor.appendChild(div);
-      });
+          const nombre = document.createElement('div');
+          nombre.className = 'info';
+          nombre.textContent = m.nombre;
+          if (aprobadas.includes(m.id)) nombre.classList.add('aprobada');
+
+          const temarioIcon = document.createElement('span');
+          temarioIcon.className = 'temario';
+          temarioIcon.innerHTML = '📄';
+          temarioIcon.onclick = (e) => {
+            e.stopPropagation();
+            showTemario(m.temario);
+          };
+
+          div.onclick = () => toggleAprob(m.id);
+
+          div.appendChild(circulo);
+          div.appendChild(nombre);
+          div.appendChild(temarioIcon);
+          bloque.appendChild(div);
+        });
+
+        cont.appendChild(bloque);
+      }
     }
 
     function toggleAprob(id) {
@@ -207,7 +191,7 @@
 
     function showTemario(t) {
       const c = document.getElementById('temarioContent');
-      c.innerHTML = t.length ? '<ul>' + t.map(e => '<li>' + e + '</li>').join('') + '</ul>' : 'No disponible';
+      c.innerHTML = t.length ? '<ul>' + t.map(e => '<li>' + e + '</li>').join('') + '</ul>' : 'No existe';
       document.getElementById('modal').style.display = 'flex';
     }
 
