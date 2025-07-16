@@ -8,35 +8,40 @@
     body {
       font-family: sans-serif;
       background: #f5f5f5;
-      padding: 20px;
+      margin: 0;
+      padding: 10px;
+      overflow: hidden;
+      zoom: 0.7;
     }
 
     h1 {
       text-align: center;
+      font-size: 22px;
+      margin-bottom: 10px;
     }
 
     .años-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
       justify-content: center;
     }
 
     .semestre-card {
       background: #fef6e4;
-      border-radius: 16px;
-      padding: 10px;
-      width: 300px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      padding: 6px;
+      width: 220px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .semestre-title {
       font-weight: bold;
-      font-size: 20px;
+      font-size: 16px;
       text-align: center;
       background-color: #f1ddbb;
-      padding: 10px;
-      border-radius: 16px 16px 0 0;
+      padding: 6px;
+      border-radius: 12px 12px 0 0;
       color: #4b2e2e;
     }
 
@@ -44,9 +49,10 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin: 10px;
-      padding: 10px;
-      border-radius: 10px;
+      margin: 6px;
+      padding: 6px;
+      border-radius: 8px;
+      font-size: 12px;
       cursor: pointer;
       transition: background 0.3s;
     }
@@ -56,33 +62,27 @@
       pointer-events: none;
     }
 
-    .subject .info {
-      flex: 1;
-      margin-left: 10px;
-    }
-
     .subject .info.aprobada {
       text-decoration: line-through;
     }
 
     .credits {
-      flex-shrink: 0;
-      width: 36px;
-      height: 36px;
+      width: 26px;
+      height: 26px;
+      font-size: 12px;
       border-radius: 50%;
+      background: white;
+      border: 1px solid #ccc;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      background: white;
-      color: black;
-      border: 1px solid #ccc;
     }
 
     .temario {
-      margin-left: 8px;
+      margin-left: 6px;
       cursor: pointer;
-      font-size: 18px;
+      font-size: 14px;
     }
 
     .matematicas    { background: #748DAE; }
@@ -101,6 +101,7 @@
       background: rgba(0,0,0,0.6);
       justify-content: center;
       align-items: center;
+      z-index: 999;
     }
 
     .modal-content {
@@ -109,6 +110,16 @@
       border-radius: 10px;
       max-width: 400px;
       text-align: center;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 6px 12px;
+      border: none;
+      background: #4b2e2e;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -125,7 +136,7 @@
   </div>
 
   <script>
-     const materias = [
+         const materias = [
       { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas','Funciones y límites','Derivadas','Integrales','Series'], semestre:1, deps:[], categoria:'matematicas' },
       { id:'algebra', nombre:'Álgebra Lineal', creditos:7.5, temario:['Sistemas de ecuaciones','Espacios vectoriales','Transformaciones lineales'], semestre:1, deps:[], categoria:'matematicas' },
       { id:'biocel', nombre:'Biología Celular', creditos:7.5, temario:['Estructura celular','Genética','Función celular'], semestre:1, deps:[], categoria:'biologia' },
@@ -273,4 +284,3 @@
 </body>
 </html>
 
-    
