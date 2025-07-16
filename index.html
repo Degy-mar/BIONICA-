@@ -1,147 +1,178 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Malla Curricular Biónica - UPIITA</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Malla Curricular Biónica</title>
 <style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f9f9f9;
+    background: #f5f5f5;
     color: #333;
-    display: flex;
-    justify-content: center;
+    margin: 0;
     padding: 20px;
   }
-  .grid {
-    display: flex;
-    gap: 20px;
-    overflow-x: auto;
-  }
-  .semester {
-    background: white;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
-    min-width: 220px;
-  }
-  .semester h3 {
+  h1 {
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
   }
   .subject {
-    margin: 5px 0;
-    padding: 8px;
-    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     cursor: pointer;
-    user-select: none;
+    transition: transform 0.2s;
     position: relative;
-    transition: 0.3s;
   }
-  .subject.locked {
+  .subject:hover {
+    transform: scale(1.02);
+  }
+  .credits {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     background: #ccc;
-    cursor: not-allowed;
-    color: #777;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    font-weight: bold;
+    color: white;
   }
-  .subject.done {
-    text-decoration: line-through;
-    opacity: 0.6;
+  .info {
+    flex: 1;
   }
-  .subject:hover::after {
+  .locked {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .subject[data-tooltip]:hover::after {
     content: attr(data-tooltip);
     position: absolute;
-    left: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #333;
+    left: 50%;
+    top: -5px;
+    transform: translateX(-50%) translateY(-100%);
+    background: rgba(0,0,0,0.8);
     color: #fff;
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: 5px;
+    border-radius: 5px;
     white-space: nowrap;
-    z-index: 10;
     font-size: 12px;
+  }
+  .temario {
     margin-left: 8px;
+    cursor: pointer;
+    font-size: 18px;
+  }
+  /* Colores por categoría */
+  .matematicas { background: #748DAE; }
+  .biologia { background: #4A9782; }
+  .quimica { background: #E07A5F; }
+  .computacion { background: #9ECAD6; }
+  .electronica { background: #FFCDB2; }
+  .bioetica, .desarrollo, .liderazgo { background: #DCC5B2; }
+  .fisica, .biofisica { background: #ADB2D4; }
+  .otros { background: #999; }
+
+  /* Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 400px;
+    text-align: center;
   }
 </style>
 </head>
 <body>
-<div class="grid" id="grid"></div>
+<h1>Malla Curricular Biónica (UPIITA - IPN)</h1>
+<div id="malla" class="grid"></div>
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <h3>Temario</h3>
+    <div id="temarioContent"></div>
+    <button onclick="closeModal()">Cerrar</button>
+  </div>
+</div>
 <script>
-const subjects = {
-  'Calculo diferencial e integral': { semester:1, color:'#748DAE', unlocks:['Calculo vectorial','Fisicoquímica','Fundamentos matemáticos para la ingeniería','Análisis numérico','Biógnosis','Ecuaciones diferenciales'] },
-  'Algebra lineal': { semester:1, color:'#748DAE', unlocks:['Ecuaciones diferenciales','Fundamentos matemáticos para la ingeniería','Análisis numérico'] },
-  'Biología celular': { semester:1, color:'#4A9782', unlocks:['Biología molecular','Bioquímica','Biógnosis'] },
-  'Química orgánica': { semester:1, color:'#E07A5F', unlocks:['Fisicoquímica','Bioquímica','Biomagnetismo','Biomateriales'] },
-  'Metrología': { semester:1, color:'#FFCDB2', unlocks:['Dispositivos electrónicos'] },
-  'Bioética': { semester:1, color:'#ADB2D4', unlocks:[] },
+const materias = [
+  // Ejemplo. Esto se llenaría con TODAS las materias extraídas del PDF y del temario inicial
+  { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas','Derivadas','Integrales'], semestre:1, deps:[], categoria:'matematicas' },
+  { id:'algebra', nombre:'Álgebra Lineal', creditos:7.5, temario:['Sistemas','Espacios'], semestre:1, deps:[], categoria:'matematicas' },
+  { id:'bio', nombre:'Biología Celular', creditos:7.5, temario:['Estructura celular'], semestre:1, deps:[], categoria:'biologia' },
+  { id:'ecuaciones', nombre:'Ecuaciones Diferenciales', creditos:7.5, temario:['Primer orden'], semestre:2, deps:['algebra','calculo'], categoria:'matematicas' },
+  { id:'bioquimica', nombre:'Bioquímica', creditos:6, temario:['Proteínas'], semestre:4, deps:['bio','quimica'], categoria:'biologia' },
+];
+const aprobadas = JSON.parse(localStorage.getItem('aprobadas')||'[]');
 
-  'Herramientas computacionales': { semester:2, color:'#9ECAD6', unlocks:['Biógnosis','Procesamiento de imágenes','Dispositivos programables'] },
-  'Calculo vectorial': { semester:2, color:'#748DAE', unlocks:['Fundamentos de la teoría electromagnética','Fundamentos matemáticos para la ingeniería','Ondas electromagnéticas y sistemas radianes','Física moderna y óptica'] },
-  'Anatomía': { semester:2, color:'#4A9782', unlocks:['Fisiología'] },
-  'Fundamentos de física para la ingeniería': { semester:2, color:'#748DAE', unlocks:['Fundamentos de la teoría electromagnética','Fisicoquímica','Bioquímica','Dispositivos electrónicos','Biógnosis','Física moderna y óptica','Biomagnetismo','Biomateriales'] },
-  'Ingles 1': { semester:2, color:'#DCC5B2', unlocks:['Ingles 2'] },
-  'Biología molecular': { semester:2, color:'#4A9782', unlocks:['Bioquímica'] },
-  'Ecuaciones diferenciales': { semester:2, color:'#748DAE', unlocks:['Fundamentos matemáticos para la ingeniería','Ondas electromagnéticas y sistemas radianes','Análisis numérico','Biógnosis','Teoría del control'] },
+function render() {
+  const container = document.getElementById('malla');
+  container.innerHTML = '';
+  materias.forEach(m => {
+    const aprob = aprobadas.includes(m.id);
+    const pendientes = m.deps.filter(d => !aprobadas.includes(d));
+    const div = document.createElement('div');
+    div.className = 'subject' + (pendientes.length? ' locked':'');
+    div.setAttribute('data-tooltip', pendientes.length? 'Falta: '+pendientes.join(', '):'');
+    div.onclick = ()=>toggleAprob(m.id);
 
-  'Programación orientada a objetos': { semester:3, color:'#9ECAD6', unlocks:['Procesamiento de imágenes','Dispositivos programables','Control neurodifuso'] },
-  'Fundamentos de la teoría electromagnética': { semester:3, color:'#748DAE', unlocks:['Ondas electromagnéticas y sistemas radianes','Biomagnetismo','Biofísica'] },
-  'Desarrollo sostenible': { semester:3, color:'#ADB2D4', unlocks:[] },
-  'Fisicoquímica': { semester:3, color:'#E07A5F', unlocks:['Bioquímica','Biomateriales'] },
-  'Fisiología': { semester:3, color:'#4A9782', unlocks:['Biógnosis','Biofísica','Procesamiento de señales biológicas'] },
-  'Teoría de los circuitos': { semester:3, color:'#FFCDB2', unlocks:['Electrónica analógica y de potencia','Electrónica digital'] },
-  'Ingles 2': { semester:3, color:'#DCC5B2', unlocks:['Ingles 3'] },
+    const circle = document.createElement('div');
+    circle.className = 'credits ' + m.categoria;
+    circle.textContent = m.creditos;
 
-  // Continúa con los demás semestres (por espacio resumido aquí)
-};
+    const info = document.createElement('div');
+    info.className = 'info';
+    info.textContent = m.nombre;
 
-const state = JSON.parse(localStorage.getItem('bionica_progress')||'{}');
-const grid = document.getElementById('grid');
+    const tem = document.createElement('span');
+    tem.className = 'temario';
+    tem.innerHTML = '📄';
+    tem.onclick = (e)=>{ e.stopPropagation(); showTemario(m.temario); };
 
-for(let s=1; s<=10; s++){
-  const col = document.createElement('div');
-  col.className='semester';
-  col.innerHTML=`<h3>Semestre ${s}</h3>`;
-  for(const [name,data] of Object.entries(subjects)){
-    if(data.semester === s){
-      const div = document.createElement('div');
-      div.className='subject';
-      div.style.background=data.color;
-      div.textContent=name;
-      div.dataset.name=name;
-      div.dataset.tooltip='Bloqueado';
-      col.appendChild(div);
-    }
-  }
-  grid.appendChild(col);
-}
-
-function updateUI(){
-  document.querySelectorAll('.subject').forEach(el=>{
-    const name = el.dataset.name;
-    let locked=false, tooltip=[];
-    for(const [k,v] of Object.entries(subjects)){
-      if(v.unlocks.includes(name)&&!state[k]){
-        locked=true;
-        tooltip.push(k);
-      }
-    }
-    el.classList.toggle('locked',locked);
-    el.classList.toggle('done',state[name]);
-    el.dataset.tooltip= locked?`Requiere: ${tooltip.join(', ')}`:'';
+    div.appendChild(circle);
+    div.appendChild(info);
+    div.appendChild(tem);
+    container.appendChild(div);
+    if(aprob) div.style.opacity=1;
   });
 }
 
-updateUI();
+function toggleAprob(id) {
+  const idx = aprobadas.indexOf(id);
+  if(idx>=0) aprobadas.splice(idx,1);
+  else aprobadas.push(id);
+  localStorage.setItem('aprobadas',JSON.stringify(aprobadas));
+  render();
+}
 
-document.querySelectorAll('.subject').forEach(el=>{
-  el.addEventListener('click',()=>{
-    const name=el.dataset.name;
-    if(el.classList.contains('locked')) return;
-    state[name]=!state[name];
-    localStorage.setItem('bionica_progress',JSON.stringify(state));
-    updateUI();
-  });
-});
+function showTemario(temario) {
+  const content = document.getElementById('temarioContent');
+  content.innerHTML = temario.length ? '<ul>' + temario.map(t=>'<li>'+t+'</li>').join('')+'</ul>' : 'No existe';
+  document.getElementById('modal').style.display = 'flex';
+}
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+render();
 </script>
 </body>
 </html>
+
