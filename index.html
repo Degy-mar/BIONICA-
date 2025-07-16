@@ -5,96 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Malla Curricular Biónica</title>
 <style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f5f5f5;
-    color: #333;
-    margin: 0;
-    padding: 20px;
-  }
-  h1 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-  }
-  .subject {
-    display: flex;
-    align-items: center;
-    background: white;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    cursor: pointer;
-    transition: transform 0.2s;
-    position: relative;
-  }
-  .subject:hover {
-    transform: scale(1.02);
-  }
-  .credits {
-    flex-shrink: 0;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 10px;
-    font-weight: bold;
-    color: white;
-  }
-  .info {
-    flex: 1;
-  }
-  .locked {
-    opacity: 0.5;
-    pointer-events: none;
-  }
-  .subject[data-tooltip]:hover::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    left: 50%;
-    top: -5px;
-    transform: translateX(-50%) translateY(-100%);
-    background: rgba(0,0,0,0.8);
-    color: #fff;
-    padding: 5px;
-    border-radius: 5px;
-    white-space: nowrap;
-    font-size: 12px;
-  }
-  .temario {
-    margin-left: 8px;
-    cursor: pointer;
-    font-size: 18px;
-  }
-  .matematicas { background: #748DAE; }
-  .matematicas-claro { background: #9ECAD6; }
-  .biologia { background: #4A9782; }
-  .quimica { background: #E07A5F; }
-  .electronica { background: #FFCDB2; }
-  .fisica { background: #ADB2D4; }
-  .bioetica { background: #DCC5B2; }
-  .otros { background: #999; }
-  .modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.6);
-    justify-content: center;
-    align-items: center;
-  }
-  .modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 400px;
-    text-align: center;
-  }
+  body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;background: #f5f5f5;color: #333;margin: 0;padding: 20px;}
+  h1 {text-align: center;margin-bottom: 20px;}
+  .grid {display: grid;grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));gap: 20px;}
+  .subject {display: flex;align-items: center;background: white;padding: 10px;border-radius: 10px;box-shadow: 0 2px 5px rgba(0,0,0,0.1);cursor: pointer;transition: transform 0.2s;position: relative;}
+  .subject:hover {transform: scale(1.02);}
+  .credits {flex-shrink: 0;width: 40px;height: 40px;border-radius: 50%;display: flex;align-items: center;justify-content: center;margin-right: 10px;font-weight: bold;color: white;}
+  .info {flex: 1;}
+  .locked {opacity: 0.5;pointer-events: none;}
+  .subject[data-tooltip]:hover::after {content: attr(data-tooltip);position: absolute;left: 50%;top: -5px;transform: translateX(-50%) translateY(-100%);background: rgba(0,0,0,0.8);color: #fff;padding: 5px;border-radius: 5px;white-space: nowrap;font-size: 12px;}
+  .temario {margin-left: 8px;cursor: pointer;font-size: 18px;}
+  .matematicas {background: #748DAE;}
+  .matematicas-claro {background: #9ECAD6;}
+  .biologia {background: #4A9782;}
+  .quimica {background: #E07A5F;}
+  .electronica {background: #FFCDB2;}
+  .fisica {background: #ADB2D4;}
+  .bioetica {background: #DCC5B2;}
+  .otros {background: #999;}
+  .modal {display: none;position: fixed;top: 0;left: 0;right: 0;bottom: 0;background: rgba(0,0,0,0.6);justify-content: center;align-items: center;}
+  .modal-content {background: white;padding: 20px;border-radius: 10px;max-width: 400px;text-align: center;}
 </style>
 </head>
 <body>
@@ -107,52 +37,6 @@
     <button onclick="closeModal()">Cerrar</button>
   </div>
 </div>
-<script>
-const materias = [ /* aquí irían TODAS tus materias cargadas */ ];
-const aprobadas = JSON.parse(localStorage.getItem('aprobadas')||'[]');
-function render() {
-  const container = document.getElementById('malla');
-  container.innerHTML = '';
-  materias.forEach(m => {
-    const aprob = aprobadas.includes(m.id);
-    const pendientes = m.deps.filter(d => !aprobadas.includes(d));
-    const div = document.createElement('div');
-    div.className = 'subject' + (pendientes.length? ' locked':'');
-    div.setAttribute('data-tooltip', pendientes.length? 'Falta: '+pendientes.join(', '):'');
-    div.onclick = ()=>toggleAprob(m.id);
-    const circle = document.createElement('div');
-    circle.className = 'credits ' + m.categoria;
-    circle.textContent = m.creditos;
-    const info = document.createElement('div');
-    info.className = 'info';
-    info.textContent = m.nombre;
-    const tem = document.createElement('span');
-    tem.className = 'temario';
-    tem.innerHTML = '📄';
-    tem.onclick = (e)=>{ e.stopPropagation(); showTemario(m.temario); };
-    div.appendChild(circle);
-    div.appendChild(info);
-    div.appendChild(tem);
-    container.appendChild(div);
-    if(aprob) div.style.opacity=1;
-  });
-}
-function toggleAprob(id) {
-  const idx = aprobadas.indexOf(id);
-  if(idx>=0) aprobadas.splice(idx,1);
-  else aprobadas.push(id);
-  localStorage.setItem('aprobadas',JSON.stringify(aprobadas));
-  render();
-}
-function showTemario(temario) {
-  const content = document.getElementById('temarioContent');
-  content.innerHTML = temario.length ? '<ul>' + temario.map(t=>'<li>'+t+'</li>').join('')+'</ul>' : 'No existe';
-  document.getElementById('modal').style.display = 'flex';
-}
-function closeModal() {
-  document.getElementById('modal').style.display = 'none';
-}
-render();
-</script>
+<script src="https://cdn.jsdelivr.net/gh/mariatorrespz/malla-bionica/malla-completa.js"></script>
 </body>
 </html>
