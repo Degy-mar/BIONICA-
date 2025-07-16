@@ -1,18 +1,132 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Malla Curricular Biónica</title>
-<style>body{font-family:sans-serif;background:#f5f5f5;padding:20px}h1{text-align:center}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:15px}.subject{display:flex;align-items:center;background:white;padding:10px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.1);cursor:pointer;position:relative}.subject:hover{transform:scale(1.02)}.credits{flex-shrink:0;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-right:10px;font-weight:bold;color:#fff}.locked{opacity:.5;pointer-events:none}.subject[data-tooltip]:hover::after{content:attr(data-tooltip);position:absolute;top:-5px;left:50%;transform:translateX(-50%) translateY(-100%);background:#333;color:#fff;padding:5px;border-radius:5px;font-size:12px}.temario{margin-left:8px;cursor:pointer;font-size:18px}.matematicas{background:#748DAE}.biologia{background:#4A9782}.quimica{background:#E07A5F}.electronica{background:#FFCDB2}.fisica{background:#ADB2D4}.bioetica{background:#DCC5B2}.otros{background:#999}.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);justify-content:center;align-items:center}.modal-content{background:#fff;padding:20px;border-radius:10px;max-width:400px;text-align:center}</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Malla Curricular Biónica</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 15px;
+    }
+
+    .subject {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.2s;
+    }
+
+    .subject:hover {
+      transform: scale(1.02);
+    }
+
+    .subject.aprobada {
+      opacity: 1 !important;
+      background-color: #d4edda !important;
+      text-decoration: line-through;
+    }
+
+    .credits {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      font-weight: bold;
+      background-color: white;
+      color: black;
+    }
+
+    .info {
+      flex: 1;
+    }
+
+    .subject[data-tooltip]:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: -5px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100%);
+      background: #333;
+      color: #fff;
+      padding: 5px;
+      border-radius: 5px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .temario {
+      margin-left: 8px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .locked {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    /* Colores por categoría */
+    .matematicas { background: #748DAE; }
+    .biologia    { background: #4A9782; }
+    .quimica     { background: #E07A5F; }
+    .electronica { background: #FFCDB2; }
+    .fisica      { background: #ADB2D4; }
+    .bioetica    { background: #DCC5B2; }
+    .otros       { background: #999; }
+  </style>
 </head>
 <body>
-<h1>Malla Curricular Biónica (UPIITA-IPN)</h1>
-<div id="malla" class="grid"></div>
-<div id="modal" class="modal"><div class="modal-content"><h3>Temario</h3><div id="temarioContent"></div><button onclick="closeModal()">Cerrar</button></div></div>
-<script>
- const materias = [
-  { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas','Funciones y límites','Derivadas','Integrales','Series'], semestre:1, deps:[], categoria:'matematicas' },
+  <h1>Malla Curricular Biónica (UPIITA-IPN)</h1>
+  <div id="malla" class="grid"></div>
+
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h3>Temario</h3>
+      <div id="temarioContent"></div>
+      <button onclick="closeModal()">Cerrar</button>
+    </div>
+  </div>
+
+  <script>
+    const materias = [ { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas','Funciones y límites','Derivadas','Integrales','Series'], semestre:1, deps:[], categoria:'matematicas' },
   { id:'algebra', nombre:'Álgebra Lineal', creditos:7.5, temario:['Sistemas de ecuaciones','Espacios vectoriales','Transformaciones lineales'], semestre:1, deps:[], categoria:'matematicas' },
   { id:'biocel', nombre:'Biología Celular', creditos:7.5, temario:['Estructura celular','Genética','Función celular'], semestre:1, deps:[], categoria:'biologia' },
   { id:'quimica', nombre:'Química Orgánica', creditos:7.5, temario:['Hidrocarburos','Carbohidratos','Aminoácidos'], semestre:1, deps:[], categoria:'quimica' },
@@ -80,14 +194,81 @@
   { id:'trabajoi', nombre:'Trabajo Terminal I', creditos:7.5, temario:['Proyecto terminal'], semestre:9, deps:['proyectos'], categoria:'otros' },
 
   { id:'trabajoii', nombre:'Trabajo Terminal II', creditos:7.5, temario:['Desarrollo final'], semestre:10, deps:['trabajoi'], categoria:'otros' }\n];\n``` 
-
 ];
-const aprobadas = JSON.parse(localStorage.getItem('aprobadas')||'[]');
-function render(){const c=document.getElementById('malla');c.innerHTML='';materias.forEach(m=>{const a=aprobadas.includes(m.id),p=m.deps.filter(d=>!aprobadas.includes(d)),d=document.createElement('div');d.className='subject'+(p.length?' locked':'');d.setAttribute('data-tooltip',p.length?'Falta: '+p.join(', '):'');d.onclick=()=>toggleAprob(m.id);const s=document.createElement('div');s.className='credits '+m.categoria;s.textContent=m.creditos;const i=document.createElement('div');i.className='info';i.textContent=m.nombre;const t=document.createElement('span');t.className='temario';t.innerHTML='📄';t.onclick=e=>{e.stopPropagation();showTemario(m.temario)};d.appendChild(s);d.appendChild(i);d.appendChild(t);c.appendChild(d);if(a)d.style.opacity=1;});}
-function toggleAprob(id){const i=aprobadas.indexOf(id);if(i>=0)aprobadas.splice(i,1);else aprobadas.push(id);localStorage.setItem('aprobadas',JSON.stringify(aprobadas));render()}
-function showTemario(t){const c=document.getElementById('temarioContent');c.innerHTML=t.length?'<ul>'+t.map(e=>'<li>'+e+'</li>').join('')+'</ul>':'No existe';document.getElementById('modal').style.display='flex'}
-function closeModal(){document.getElementById('modal').style.display='none'}
-render();
-</script>
+
+    const aprobadas = JSON.parse(localStorage.getItem('aprobadas') || '[]');
+
+    function getColor(categoria) {
+      const colores = {
+        matematicas: '#748DAE',
+        biologia: '#4A9782',
+        quimica: '#E07A5F',
+        electronica: '#FFCDB2',
+        fisica: '#ADB2D4',
+        bioetica: '#DCC5B2',
+        otros: '#999'
+      };
+      return colores[categoria] || '#ccc';
+    }
+
+    function render() {
+      const contenedor = document.getElementById('malla');
+      contenedor.innerHTML = '';
+
+      materias.forEach(m => {
+        const esAprobada = aprobadas.includes(m.id);
+        const depsFaltantes = m.deps.filter(d => !aprobadas.includes(d));
+
+        const div = document.createElement('div');
+        div.className = 'subject';
+        if (depsFaltantes.length) div.classList.add('locked');
+        if (esAprobada) div.classList.add('aprobada');
+        div.setAttribute('data-tooltip', depsFaltantes.length ? 'Falta: ' + depsFaltantes.join(', ') : '');
+        div.style.backgroundColor = getColor(m.categoria);
+        div.onclick = () => toggleAprob(m.id);
+
+        const circulo = document.createElement('div');
+        circulo.className = 'credits';
+        circulo.textContent = m.creditos;
+
+        const nombre = document.createElement('div');
+        nombre.className = 'info';
+        nombre.textContent = m.nombre;
+
+        const iconoTemario = document.createElement('span');
+        iconoTemario.className = 'temario';
+        iconoTemario.innerHTML = '📄';
+        iconoTemario.onclick = (e) => {
+          e.stopPropagation();
+          showTemario(m.temario);
+        };
+
+        div.appendChild(circulo);
+        div.appendChild(nombre);
+        div.appendChild(iconoTemario);
+        contenedor.appendChild(div);
+      });
+    }
+
+    function toggleAprob(id) {
+      const i = aprobadas.indexOf(id);
+      if (i >= 0) aprobadas.splice(i, 1);
+      else aprobadas.push(id);
+      localStorage.setItem('aprobadas', JSON.stringify(aprobadas));
+      render();
+    }
+
+    function showTemario(t) {
+      const c = document.getElementById('temarioContent');
+      c.innerHTML = t.length ? '<ul>' + t.map(e => '<li>' + e + '</li>').join('') + '</ul>' : 'No existe';
+      document.getElementById('modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    render();
+  </script>
 </body>
 </html>
