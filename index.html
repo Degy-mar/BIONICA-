@@ -3,361 +3,185 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Malla Curricular Biónica</title>
+  <title>Malla Curricular Biónica (UPIITA-IPN)</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: #f5f5f5;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
       margin: 0;
-      padding: 10px;
+      padding: 20px;
     }
 
-      .header {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  h1 {
-    text-align: center;
-    grid-column: 2;
-    font-size: 22px;
-    margin: 0;
-  }
-  
-  #promedio {
-    text-align: right;
-    font-weight: bold;
-    font-size: 16px;
-    color: #444;
-    grid-column: 3;
-  }
-
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
 
     #promedio {
+      position: absolute;
+      top: 20px;
+      right: 20px;
       font-weight: bold;
-      font-size: 16px;
-      color: #444;
     }
 
-    .años-container {
+    .semestre {
+      margin-bottom: 30px;
+    }
+
+    .semestre h2 {
+      margin-bottom: 10px;
+    }
+
+    .materias {
       display: flex;
-      flex-direction: column;
+      flex-wrap: wrap;
       gap: 12px;
-      align-items: center;
     }
 
-    .fila {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
-
-    .semestre-card {
-      background: #fef6e4;
-      border-radius: 8px;
-      padding: 6px;
+    .materia {
+      background: white;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      padding: 10px 16px;
       width: 220px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+      position: relative;
     }
 
-    .semestre-title {
-      font-weight: bold;
-      font-size: 14px;
-      text-align: center;
-      background-color: #f1ddbb;
-      padding: 5px;
-      border-radius: 8px 8px 0 0;
-      color: #4b2e2e;
-    }
-
-    .subject {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin: 4px 2px;
-      padding: 4px 6px;
-      border-radius: 6px;
-      font-size: 11px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .subject.locked {
-      opacity: 0.4;
-      pointer-events: none;
-    }
-
-    .subject .info.aprobada {
+    .materia.tachada {
+      opacity: 0.5;
       text-decoration: line-through;
     }
 
-    .credits {
-      width: 22px;
-      height: 22px;
-      font-size: 10px;
-      border-radius: 50%;
-      background: white;
-      border: 1px solid #ccc;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      flex-shrink: 0;
-      margin-right: 4px;
+    .creditos {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      font-size: 0.8em;
+      color: #555;
     }
 
-    .temario, .calificacion-icon {
-      margin-left: 4px;
-      cursor: pointer;
-      font-size: 13px;
-      flex-shrink: 0;
-    }
-
-    .matematicas    { background: #748DAE; }
-    .biologia       { background: #4A9782; }
-    .quimica        { background: #E07A5F; }
-    .electronica    { background: #FFCDB2; }
-    .fisica         { background: #ADB2D4; }
-    .bioetica       { background: #DCC5B2; }
-    .otros          { background: #999; color: white; }
-
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      right: 0; bottom: 0;
-      background: rgba(0,0,0,0.6);
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
-
-    .modal-content {
-      background: #fff;
-      padding: 16px;
-      border-radius: 10px;
-      max-width: 360px;
+    .calificacion {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      width: 40px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
       text-align: center;
     }
 
-    button {
-      margin-top: 10px;
-      padding: 6px 12px;
-      border: none;
-      background: #4b2e2e;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
+    input:disabled {
+      background-color: #eee;
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>Malla Curricular Biónica (UPIITA-IPN)</h1>
-    <div id="promedio">Promedio: --</div>
-  </div>
 
-  <div id="malla" class="años-container"></div>
+<h1>Malla Curricular Biónica (UPIITA-IPN)</h1>
+<div id="promedio">Promedio: --</div>
+<div id="malla"></div>
 
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <h3>Temario</h3>
-      <div id="temarioContent"></div>
-      <button onclick="closeModal()">Cerrar</button>
-    </div>
-  </div>
+<script>
+const materias = [
+  { nombre: "Cálculo diferencial e integral", semestre: 1, creditos: 10, desbloquea: [2], calificacion: null },
+  { nombre: "Álgebra lineal", semestre: 1, creditos: 8, desbloquea: [3], calificacion: null },
+  { nombre: "Biología celular", semestre: 1, creditos: 7, desbloquea: [], calificacion: null },
+  { nombre: "Química orgánica", semestre: 1, creditos: 7, desbloquea: [], calificacion: null },
+  { nombre: "Física I", semestre: 2, creditos: 9, desbloquea: [], calificacion: null },
+  { nombre: "Ecuaciones diferenciales", semestre: 3, creditos: 9, desbloquea: [], calificacion: null }
+];
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-     const materias = [
-      { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas de los números reales y complejos, funciones y límites.','Cálculo Diferencial y sus aplicaciones.','Cálculo Integral y sus aplicaciones.','Sucesiones y Series.'], semestre:1, deps:[], categoria:'matematicas' },
-      { id:'algebra', nombre:'Álgebra Lineal', creditos:7.5, temario:['Sistemas de ecuaciones lineales','Espacios vectoriales','Transformaciones lineales','Valores propios y vectores propios','Espacios con prducto interior'], semestre:1, deps:[], categoria:'matematicas' },
-      { id:'biocel', nombre:'Biología Celular', creditos:7.5, temario:['Fundamentos físicos y químicos.','Estructura celular.','Almacenamiento y expresión de la información genética.','Función celular.','Bases de fisiología y anatomía.'], semestre:1, deps:[], categoria:'biologia' },
-      { id:'quimica', nombre:'Química Orgánica', creditos:7.5, temario:['Introducción a la Química Orgánica.','Hidrocarburos.','Derivados de los hidrocarburos.','Carbohidratos.','Aminoácidos y proteínas'], semestre:1, deps:[], categoria:'quimica' },
-      { id:'metrologia', nombre:'Metrología', creditos:6, temario:['Generalidades.','Mediciones Eléctrica.','Mediciones Mecánicas.','Mediciones de Temperatura.'], semestre:1, deps:[], categoria:'otros' },
-      { id:'bioetica', nombre:'Bioética', creditos:4.5, temario:['Campo teórico de la bioética.','Dilemas bioéticos.','Bioética y medioambiente.','La cultura tecnocientífica.'], semestre:1, deps:[], categoria:'bioetica' },
-    
-      { id:'herramientas', nombre:'Herramientas Computacionales', creditos:6, temario:['Fundamentos básicos de los lenguajes de programación.','Uso de herramientas básicas en los leguajes de programación.','Fundamentos del Dibujo e Introducción al CAD,CAM,CAE.','Diseño en 2D.','Diseño en 3D y Documentación.'], semestre:2, deps:[], categoria:'otros' },
-      { id:'vectorial', nombre:'Cálculo Vectorial', creditos:9, temario:['Funciones reales de varias variables.','Cálculo diferencial de funciones reales de varias variables.','Cálculo integral de funciones reales de varias variables.','Funciones vectoriales de variable real.','Cálculo vectorial.'], semestre:2, deps:['calculo'], categoria:'matematicas' },
-      { id:'anatomia', nombre:'Anatomía', creditos:7.5, temario:['Introducción.','Historia.','Generalidades.','Osteología.','Artrología.','Miología.','Sistema nervioso.','Corazón y grandes vasos.'], semestre:2, deps:[], categoria:'biologia' },
-      { id:'fisica', nombre:'Fundamentos de Física para la Ingeniería', creditos:9, temario:['Cinemática.','Las Leyes de Newton y sus aplicaciones.','Leyes de conservación.','Sistemas de partículas.','Aplicaciones de la Mecánica a la biónica.'], semestre:2, deps:[], categoria:'fisica' },
-      { id:'ingles1', nombre:'Inglés 1', creditos:3, temario:['Consolidación gramatical del tiempo presente.','Consolidación gramatical del tiempo pasado.','Consolidación gramatical del tiempo futuro y verbos modales.'], semestre:2, deps:[], categoria:'otros' },
-      { id:'biomol', nombre:'Biología Molecular', creditos:7.5, temario:['Introducción a la biología molecular.','Replicación del ADN.','Expresión y regulación genética en células procarióticas.','Expresión y regulación genética en células eucarióticas.','Bioinformática y técnicas de biología molecular.'], semestre:2, deps:['biocel'], categoria:'biologia' },
-      { id:'ecuaciones', nombre:'Ecuaciones Diferenciales', creditos:7.5, temario:['Introducción a las ecuaciones diferenciales y a las ecuaciones de primer orden.','Ecuaciones diferenciales de orden superior.','Resolución de ecuaciones diferenciales mediante series de potencias.','La Transformada de Laplace.','Sistemas de ecuaciones diferenciales.'], semestre:2, deps:['calculo','algebra'], categoria:'matematicas' },
-    
-      { id:'poo', nombre:'Programación Orientada a Objetos', creditos:6, temario:['Fundamentos del lenguaje de programación.','Sentencias de control.','Clases y objetos.','Herencia y polimorfismo.','Concepto de polimorfismo.','Programación Orientada a Objetos con Java.'], semestre:3, deps:[], categoria:'otros' },
-      { id:'electro', nombre:'Fund. Teoría Electromagnética', creditos:9, temario:['Electrostática.','Corriente eléctrica.','Magnetostática.'], semestre:3, deps:['fisica'], categoria:'fisica' },
-      { id:'desarrollo', nombre:'Desarrollo Sostenible', creditos:6, temario:['Introducción a las ciencias del ambiente y la sustentabilidad.','El equilibrio entre población suelo agua y agricultura.','Contaminación, contaminantes y medio ambiente.','Recursos naturales, biota, energía, tierra, residuos.','Marco legal y sistemas de gestión y auditoría de los recursos naturales.'], semestre:3, deps:[], categoria:'bioetica' },
-      { id:'fisicoq', nombre:'Fisicoquímica', creditos:6, temario:['Energía y la primera ley de la termodinámica; termoquímica.','Segunda y tercera leyes de la termodinámica.','Equilibrio químico.','Soluciones.','Electroquímica.'], semestre:3, deps:['quimica'], categoria:'quimica' },
-      { id:'fisiologia', nombre:'Fisiología', creditos:4.5, temario:['Introducción.','Medio Interno y Sangre.','Función Cardiaca.','Fisiología de la Respiración.','Fisiología muscular.','Función Renal.','Fisiología del Sistema Nervioso.'], semestre:3, deps:['anatomia'], categoria:'biologia' },
-      { id:'circuitos', nombre:'Teoría de los Circuitos', creditos:9, temario:[], semestre:3, deps:[], categoria:'electronica' },
-      { id:'ingles2', nombre:'Inglés 2', creditos:3, temario:['Verbos modales; verbos en infinitivo y gerundio.','Voz pasiva y discurso indirecto.','Concicionales y clausulas relativas'], semestre:3, deps:['ingles1'], categoria:'otros' },
-    
-      { id:'bioestadistica', nombre:'Bioestadística', creditos:9, temario:['Introducción a la bioestadística.','Elementos de probabilidad.','Técnicas de inferencia estadística.','Análisis de varianza y regresión lineal.','Temas complementarios.'], semestre:4, deps:[], categoria:'matematicas' },
-      { id:'bioquimica', nombre:'Bioquímica', creditos:6, temario:['Aminoácidos, proteínas y su metabolismo.','Carbohidratos y las rutas del metabolismo.','Lípidos y su metabolismo.','Ácidos nucleicos.','Bioenergética.'], semestre:4, deps:['biomol','quimica'], categoria:'biologia' },
-      { id:'fundmat', nombre:'Fund. Matemáticos Ing.', creditos:4.5, temario:['Funciones de variable compleja.','Derivada de funciones complejas.','Integración de una variable compleja.','Cálculo de integrales.','Series y transformada de Fourier y Zeta.'], semestre:4, deps:['vectorial','ecuaciones'], categoria:'matematicas' },
-      { id:'ondas', nombre:'Ondas Electromagnéticas y Sistemas', creditos:7.5, temario:['Ley de inducción de Faraday.','Ecuaciones de Maxwell.','Ondas electromagnéticas.','Radiación.'], semestre:4, deps:['electro'], categoria:'fisica' },
-      { id:'calidad', nombre:'Sist. Gestión de Calidad', creditos:4.5, temario:['La calidad en los procesos productivos.','Administración orientada a procesos Kaizen.','La Reingeniería.','ISO 9000.'], semestre:4, deps:[], categoria:'otros' },
-      { id:'analisis', nombre:'Análisis Numérico', creditos:9, temario:['Errores y solución de ecuaciones no lineales de una variable.','Matrices, sistema de ecuaciones lineales y sistemas no lineales.','Aproximación polinomial e interpolación.','Diferenciación e integración numérica.','Ecuaciones diferenciales ordinarias.'], semestre:4, deps:['ecuaciones','fundmat'], categoria:'matematicas' },
-      { id:'dispositivos', nombre:'Dispositivos Electrónicos', creditos:6, temario:['Fundamentos de Diodos y Aplicaciones.','Fundamentos de transistores BJT, JFET y MOSFET.','Fundamentos de Amplificadores Operacionales.','Fundamentos de Optoelectrónica.','Aplicaciones de Circuitos Integrados de uso específico.'], semestre:4, deps:['metrologia'], categoria:'electronica' },
-      { id:'ingles3', nombre:'Inglés 3', creditos:3, temario:['Consolidación gramatical: vocabulario.','Consolidación gramatical: lectura y escritura.','Consolidación gramatical: práctica auditiva y expresión oral.'], semestre:4, deps:['ingles2'], categoria:'otros' },
-    
-      { id:'biognosis', nombre:'Biógnosis', creditos:7.5, temario:['Modelado de Sistemas Físicos.','Simulación y Análisis de la respuesta del sistema.','Metodología para el estudio de sistemas biológicos en la generación de sistemas biomiméticos.','Modelado y simulación de sistemas biológicos.','Diseño, construcción y validación de biomiméticos.'], semestre:5, deps:['bioquimica','fisiologia'], categoria:'biologia' },
-      { id:'optica', nombre:'Física Moderna y Óptica', creditos:7.5, temario:['Óptica geométrica.','Propagación de la luz en medios transparentes.','Polarización.','Interferencia y difracción.','Introducción a la Física Moderna.'], semestre:5, deps:['ondas'], categoria:'fisica' },
-      { id:'analpot', nombre:'Electrónica Analógica y Potencia', creditos:7.5, temario:['Opto-tiristores y sus aplicaciones.','Circuitos de potencia.','Amplificadores con transistores BJT.','Amplificadores con transistores MOSFET.','Aplicaciones de los OP AMPS a filtros activos y amplificadores de instrumentación.'], semestre:5, deps:['circuitos'], categoria:'electronica' },
-      { id:'digital', nombre:'Electrónica Digital', creditos:7.5, temario:['Introducción a los sistemas digitales.','Circuitos Combinatorios.','Circuitos Secuenciales.','Máquinas de Estado Finito.','Introducción al diseño RTL (Nivel de Transferencia de Registros).'], semestre:5, deps:['circuitos'], categoria:'electronica' },
-      { id:'sensores', nombre:'Sensores y Actuadores', creditos:6, temario:['Introducción a los actuadores.','Actuadores.','Circuitos de interfaz y acondicionamiento de la señal.','Principios físicos del sensado.','Clasificación de los sensores.'], semestre:5, deps:[], categoria:'electronica' },
-      { id:'biomag', nombre:'Biomagnetismo', creditos:7.5, temario:['Parámetros magnéticos de las sustancias biológicas.','Efecto de los campos electromagnéticos en organismos vivos.','Campos magnéticos en complejos moleculares.','Aplicaciones de los campos electromagnéticos en la imagenología.','Aplicación terapéutica de los campos electromagnéticos.'], semestre:5, deps:['fisicoq','electro'], categoria:'fisica' },
-      { id:'mecanismos', nombre:'Mecanismos Biomiméticos', creditos:6, temario:['Introducción a los mecanismos biomiméticos.','Mecanismos biomiméticos.','Análisis cinemático, estático y dinámico de mecanismos.','Transmisión de potencia.'], semestre:5, deps:[], categoria:'electronica' },
-    
-      { id:'biofisica', nombre:'Biofísica', creditos:6, temario:['El hombre como sistema integrado.','Bases físicas de los fenómenos bioeléctricos.','Biofísica de los sentidos.','Física Medica.','Biofísica cardiaca y respiratoria. '], semestre:6, deps:['biognosis','biomag'], categoria:'fisica' },
-      { id:'liderazgo', nombre:'Liderazgo y Emprendedores', creditos:4.5, temario:['Liderazgo.','Desarrollo de habilidades intra e interpersonales.','El emprendedor.','Trabajo en equipo','Conflicto y negociación.'], semestre:6, deps:[], categoria:'otros' },
-      { id:'biomateriales', nombre:'Biomateriales', creditos:7.5, temario:['Introducción a los Materiales.','Caracterización de Biomateriales.','Estructura y propiedades de los Biomateriales.','Sustitución de Tejidos.','Tópicos Selectos.'], semestre:6, deps:['bioquimica'], categoria:'biologia' },
-      { id:'control', nombre:'Teoría del Control', creditos:7.5, temario:['Fundamentos de sistemas de control.','Diseño de controladores y compensadores analógicos.','Fundamentos del control digital.','Diseño de controladores y compensadores digitales.'], semestre:6, deps:['fundmat','analisis'], categoria:'matematicas' },
-      { id:'imagenes', nombre:'Procesamiento de Imágenes', creditos:6, temario:['Fundamentos de Procesamiento Digital de Imágenes.','Mejoramiento de Imagen (Preprocesamiento y Filtrado).','Transformaciones sobre Imágenes.','Extracción y Restauración de Regiones.','Análisis de Imágenes.'], semestre:6, deps:['poo'], categoria:'electronica' },
-      { id:'programables', nombre:'Dispositivos Programables', creditos:6, temario:['Estructura y operación de un microontrolador.','Interfaz.','Temporización.','Convertidor analógico-digital.','Protocolos de comunicación.'], semestre:6, deps:['digital'], categoria:'electronica' },
-      { id:'esfuerzos', nombre:'Análisis de Esfuerzos', creditos:6, temario:['Bioestática comportamiento biomecánico.','Elementos biomecánicos sometidos a carga axial.','Esfuerzos de corte en elementos biomecánicos.','Flexión en elementos biomecánicos.','Elementos biomecánicos sometidos a cargas combiadas.'], semestre:6, deps:[], categoria:'otros' },
-    
-      { id:'proyectos', nombre:'Investigación y Desarrollo', creditos:4.5, temario:['Los proyectos en Ingeniería Biónica .','Los estudios del proceso de investigación para un proyecto.','Desarrollo de un proyecto.'], semestre:7, deps:[], categoria:'otros' },
-      { id:'neurodifuso', nombre:'Control Neurodifuso', creditos:6, temario:['Sistemas Difusos.','Sistemas Neuronales.','Control Neurodifuso.'], semestre:7, deps:['control','programables'], categoria:'matematicas' },
-      { id:'psbiologicas', nombre:'Procesamiento de Señales Biológicas', creditos:6, temario:['Fundamentos de procesamiento de las señales biológicas.','Filtros digitales.','Análisis de las señales en el dominio del tiempo y frecuencia.','Análisis multidimensional.'], semestre:7, deps:['biofisica'], categoria:'electronica' },
-      { id:'bioinstr', nombre:'Bioinstrumentación', creditos:7.5, temario:['Introducción a la bioinstrumentación y técnicas de medición.','Instrumentos para la medición de variables bioeléctricas.','Instrumentos para la medición de variables biomecánicas.','Instrumentos para la medición de variables de capacidad mecánica vibraciones.','Instrumentos para la generación de tensiones, corrientes /o vibraciones.'], semestre:7, deps:['psbiologicas'], categoria:'electronica' },
-      { id:'modelado', nombre:'Modelado y Control de Sistemas Biónicos', creditos:6, temario:['Análisis dimensional y relaciones dimensionales.','Sistema biónico.','Control robusto en sistemas biónicos.','Diseño y controladores robustos.','Control robusto en sistemas biónicos.'], semestre:7, deps:['neurodifuso'], categoria:'electronica' },
-      { id:'manufactura', nombre:'Manufactura de Biomiméticos', creditos:6, temario:['Introducción a los procesos de manufactura.','Procesos de manufactura con arranque de viruta y programación CNC.','Tratamientos térmicos, recubrimientos acabados.','Procesos de modelado unión.','Procesos avanzados de maquinado prototipado rápido.'], semestre:7, deps:['mecanismos'], categoria:'electronica' },
-      { id:'patrones', nombre:'Reconocimiento de Patrones', creditos:6, temario:['Introducción.','Diseño de un sistema de reconocedor de patrones.','Clasificador de tipo lineal y no lineal.','Métodos estocásticos.','Algoritmos de Clustering.'], semestre:7, deps:['imagenes'], categoria:'electronica' },
-    
-      { id:'opt1', nombre:'Optativa 1', creditos:6, temario:[], semestre:8, deps:[], categoria:'otros' },
-      { id:'opt2', nombre:'Optativa 2', creditos:6, temario:[], semestre:8, deps:[], categoria:'otros' },
-      { id:'normas', nombre:'Normatividad y Gestión', creditos:4.5, temario:['Gestión de la tecnología.','Protección transferencia de tecnología.','Casos de legislación en biónica.'], semestre:8, deps:[], categoria:'otros' },
-      { id:'investigacion', nombre:'Metodología de Investigación', creditos:4.5, temario:['Método científico.','Planteamiento del problema.','Elaboración del protocolo de proyecto de trabajo terminal.','Presentación de trabajos científicos.'], semestre:8, deps:[], categoria:'otros' },
-      { id:'biomecanica', nombre:'Biomecánica', creditos:6, temario:['Fundamentos de la biomecánica.','Biomécanica articular.','Biomécanica del movimiento.','Biomecánica de los fluidos corporales.','Diseño de espacios de trabajo.'], semestre:8, deps:['esfuerzos'], categoria:'electronica' },
-      { id:'bioelectronica', nombre:'Bioelectrónica', creditos:6, temario:['Bioelectrónica, origen y tipos de bioseñales.','Estimulación eléctrica funcional.','Potenciales evocados.','Interfaces electrónicas.','Procesos biotecnológicos.'], semestre:8, deps:['patrones'], categoria:'electronica' },
-    
-      { id:'opt3', nombre:'Optativa 3', creditos:6, temario:[], semestre:9, deps:['opt2'], categoria:'otros' },
-      { id:'biorobotica', nombre:'Biorobótica', creditos:6, temario:['Introducción a la robótica.','Principios generales en el diseño biológico motriz.','Cinemática y dinámica de un robot biomimetico.','Técnicas de locomoción.','Tópicos emergentes de locomoción en sistemas vivos.'], semestre:9, deps:['modelado'], categoria:'electronica' },
-      { id:'trabajoi', nombre:'Trabajo Terminal I', creditos:7.5, temario:['Estado del arte y marco teórico.','Normas internacionales.','Análisis de requerimientos.','Diseño detallado y documentación.','Defensa del diseño propuesto.'], semestre:9, deps:['proyectos'], categoria:'otros' },
+function crearTarjetaMateria(materia) {
+  const tarjeta = document.createElement("div");
+  tarjeta.className = "materia";
 
-      { id:'trabajoii', nombre:'Trabajo Terminal II', creditos:7.5, temario:['Lineamientos generales de la dinámica de trabajo.','Administración del proyecto.','Documentación del proyecto.','Preparación de la defensa oral.','Análisis y discusión de resultados.'], semestre:10, deps:['trabajoi'], categoria:'otros' }
-    ];
+  const nombre = document.createElement("h3");
+  nombre.textContent = materia.nombre;
+  tarjeta.appendChild(nombre);
 
+  const creditos = document.createElement("div");
+  creditos.className = "creditos";
+  creditos.textContent = `${materia.creditos} cr`;
+  tarjeta.appendChild(creditos);
 
-    const aprobadas = JSON.parse(localStorage.getItem('aprobadas') || '[]');
-    const calificaciones = JSON.parse(localStorage.getItem('calificaciones') || '{}');
+  const input = document.createElement("input");
+  input.type = "number";
+  input.className = "calificacion";
+  input.min = 0;
+  input.max = 10;
+  input.placeholder = "--";
+  input.value = materia.calificacion ?? "";
+  input.disabled = !materia.desbloqueadas;
 
-    function render() {
-      const contenedor = document.getElementById('malla');
-      contenedor.innerHTML = '';
+  input.addEventListener("change", () => {
+    const valor = parseFloat(input.value);
+    if (!isNaN(valor)) {
+      materia.calificacion = valor;
+      desbloquearMaterias(materia);
+      renderMalla();
+    }
+  });
 
-      const fila1 = document.createElement('div');
-      fila1.className = 'fila';
+  tarjeta.appendChild(input);
 
-      const fila2 = document.createElement('div');
-      fila2.className = 'fila';
+  if (materia.calificacion !== null) {
+    tarjeta.classList.add("tachada");
+  }
 
-      for (let s = 1; s <= 10; s++) {
-        const semestreMaterias = materias.filter(m => m.semestre === s);
-        if (semestreMaterias.length === 0) continue;
+  return tarjeta;
+}
 
-        const card = document.createElement('div');
-        card.className = 'semestre-card';
+function desbloquearMaterias(materia) {
+  if (materia.desbloquea) {
+    materia.desbloquea.forEach(index => {
+      materias[index].desbloqueadas = true;
+    });
+  }
+}
 
-        const titulo = document.createElement('div');
-        titulo.className = 'semestre-title';
-        titulo.textContent = `Semestre ${s}`;
-        card.appendChild(titulo);
+function renderMalla() {
+  const contenedor = document.getElementById("malla");
+  contenedor.innerHTML = "";
 
-        semestreMaterias.forEach(m => {
-          const depsFaltan = m.deps.filter(d => !aprobadas.includes(d));
-          const esAprobada = aprobadas.includes(m.id);
+  const promedioEl = document.getElementById("promedio");
+  let total = 0, count = 0;
 
-          const materiaDiv = document.createElement('div');
-          materiaDiv.className = `subject ${m.categoria}`;
-          if (depsFaltan.length) materiaDiv.classList.add('locked');
-          materiaDiv.onclick = () => toggleAprob(m.id);
+  for (let semestre = 1; semestre <= 10; semestre++) {
+    const grupo = materias.filter(m => m.semestre === semestre);
+    if (grupo.length === 0) continue;
 
-          const creditos = document.createElement('div');
-          creditos.className = 'credits';
-          creditos.textContent = m.creditos;
+    const contenedorSemestre = document.createElement("div");
+    contenedorSemestre.className = "semestre";
 
-          const nombre = document.createElement('div');
-          nombre.className = 'info';
-          nombre.textContent = m.nombre + (calificaciones[m.id] !== undefined ? ` (${calificaciones[m.id]})` : '');
-          if (esAprobada) nombre.classList.add('aprobada');
+    const titulo = document.createElement("h2");
+    titulo.textContent = `Semestre ${semestre}`;
+    contenedorSemestre.appendChild(titulo);
 
-          const iconCal = document.createElement('span');
-          iconCal.className = 'calificacion-icon';
-          iconCal.textContent = '📝';
-          iconCal.onclick = e => {
-            e.stopPropagation();
-            if (!materiaDiv.classList.contains('locked')) ingresarCalificacion(m.id);
-          };
+    const fila = document.createElement("div");
+    fila.className = "materias";
 
-          const iconTemario = document.createElement('span');
-          iconTemario.className = 'temario';
-          iconTemario.textContent = '📄';
-          iconTemario.onclick = e => {
-            e.stopPropagation();
-            showTemario(m.temario);
-          };
-
-          materiaDiv.appendChild(creditos);
-          materiaDiv.appendChild(nombre);
-          materiaDiv.appendChild(iconCal);
-          materiaDiv.appendChild(iconTemario);
-          card.appendChild(materiaDiv);
-        });
-
-        (s <= 5 ? fila1 : fila2).appendChild(card);
+    grupo.forEach(m => {
+      if (m.calificacion !== null) {
+        total += m.calificacion;
+        count++;
       }
+      fila.appendChild(crearTarjetaMateria(m));
+    });
 
-      contenedor.appendChild(fila1);
-      contenedor.appendChild(fila2);
+    contenedorSemestre.appendChild(fila);
+    contenedor.appendChild(contenedorSemestre);
+  }
 
-      actualizarPromedio();
-    }
+  promedioEl.textContent = count ? `Promedio: ${(total / count).toFixed(2)}` : "Promedio: --";
+}
 
-    function toggleAprob(id) {
-      const idx = aprobadas.indexOf(id);
-      if (idx >= 0) {
-        aprobadas.splice(idx, 1);
-        delete calificaciones[id];
-      } else {
-        aprobadas.push(id);
-      }
-      localStorage.setItem('aprobadas', JSON.stringify(aprobadas));
-      localStorage.setItem('calificaciones', JSON.stringify(calificaciones));
-      render();
-    }
+// Inicializar desbloqueo
+materias.forEach(m => {
+  m.desbloqueadas = m.semestre === 1;
+});
 
-    function ingresarCalificacion(id) {
-      const nota = prompt("Ingresa la calificación (0 a 10):");
-      const valor = parseFloat(nota);
-      if (!isNaN(valor) && valor >= 0 && valor <= 10) {
-        calificaciones[id] = valor;
-        localStorage.setItem('calificaciones', JSON.stringify(calificaciones));
-        render();
-      }
-    }
-
-    function actualizarPromedio() {
-      const values = Object.values(calificaciones).map(n => parseFloat(n));
-      const promedio = values.length ? (values.reduce((a, b) => a + b, 0) / values.length).toFixed(2) : '--';
-      document.getElementById('promedio').textContent = `Promedio: ${promedio}`;
-    }
-
-    function showTemario(temario) {
-      const c = document.getElementById('temarioContent');
-      c.innerHTML = temario.length ? '<ul>' + temario.map(e => '<li>' + e + '</li>').join('') + '</ul>' : 'No existe';
-      document.getElementById('modal').style.display = 'flex';
-    }
-
-    function closeModal() {
-      document.getElementById('modal').style.display = 'none';
-    }
-
-    render();
-  </script>
+renderMalla();
+</script>
 </body>
 </html>
