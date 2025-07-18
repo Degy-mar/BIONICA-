@@ -1,202 +1,133 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Malla Curricular Biónica</title>
-<style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f5f5f5;
-    margin: 0;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 20px;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Malla Curricular Biónica</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 10px 15px;
+    }
 
-  h1 {
-    width: 100%;
-    text-align: center;
-    margin-bottom: 20px;
-    color: #4b2e2e;
-    user-select: none;
-  }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #4b2e2e;
+      user-select: none;
+    }
 
-  .main-container {
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-    max-width: 1200px;
-    width: 100%;
-  }
+    .main-container {
+      display: flex;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
-  .container-malla {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    flex-grow: 1;
-  }
+    .container-malla {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
 
-  .fila {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-  }
+    .fila {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
 
-  .info-lateral {
-    min-width: 180px;
-    background: #e0e0e0;
-    padding: 16px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 16px;
-    color: #333;
-    height: fit-content;
-    position: sticky;
-    top: 10px;
-    user-select: none;
-  }
+    .info-lateral {
+      min-width: 180px;
+      background: #e0e0e0;
+      padding: 16px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      color: #333;
+      height: fit-content;
+      position: sticky;
+      top: 10px;
+      user-select: none;
+    }
 
-  .info-lateral div {
-    margin-bottom: 10px;
-  }
+    .info-lateral div {
+      margin-bottom: 10px;
+    }
 
-  .semestre-card {
-    background: #d6d6d6;
-    border-radius: 8px;
-    padding: 10px 8px 6px;
-    width: 220px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    user-select: none;
-  }
+    .materia {
+      width: 120px;
+      padding: 10px;
+      border-radius: 8px;
+      background: #cfd8dc;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      transition: 0.3s;
+    }
 
-  .semestre-title {
-    font-weight: 700;
-    font-size: 14px;
-    text-align: center;
-    background-color: #bdbdbd;
-    padding: 6px 0;
-    border-radius: 8px 8px 0 0;
-    color: #4b2e2e;
-  }
+    .materia:hover {
+      transform: scale(1.05);
+    }
 
-  .subject {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 5px 2px;
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: background 0.3s;
-    background: #f7f7f7;
-  }
+    .materia.cursada {
+      background: #a5d6a7;
+    }
 
-  .subject.locked {
-    opacity: 0.4;
-    pointer-events: none;
-  }
+    .materia.bloqueada {
+      opacity: 0.3;
+      pointer-events: none;
+    }
 
-  .subject .info.aprobada {
-    text-decoration: line-through;
-  }
+    .calificacion-icono {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
 
-  .credits {
-    width: 24px;
-    height: 24px;
-    font-size: 11px;
-    border-radius: 50%;
-    border: 1px solid #ccc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    flex-shrink: 0;
-    margin-right: 8px;
-    color: white;
-    user-select: none;
-  }
+    .creditos {
+      font-size: 12px;
+      color: #555;
+      margin-top: 4px;
+    }
 
-  /* Colores sólo en círculo de créditos */
-  .credits.matematicas    { background: #7593af; }
-  .credits.fisicas       { background: #9798AE; }
-  .credits.biologicas    { background: #AEB4AC; }
-  .credits.programacion  { background: #B56B6B; }
-  .credits.electronica   { background: #A14D4D; }
-  .credits.sociales      { background: #A3909F; }
-  .credits.idiomas       { background: #C7C2BB; }
-  .credits.otros         { background: #B7B2A9; }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
 
-  .subject:hover:not(.locked) {
-    background: #e3e3e3;
-  }
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+    }
 
-  .temario, .calificacion-icon {
-    margin-left: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    flex-shrink: 0;
-    user-select: none;
-  }
-
-  .temario {
-    color: #4b2e2e;
-  }
-
-  /* Modal */
-  .modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    right: 0; bottom: 0;
-    background: rgba(0,0,0,0.6);
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-  }
-
-  .modal-content {
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 400px;
-    text-align: left;
-    max-height: 80vh;
-    overflow-y: auto;
-    box-shadow: 0 0 12px rgba(0,0,0,0.3);
-  }
-
-  .modal-content h3 {
-    margin-top: 0;
-    color: #4b2e2e;
-  }
-
-  .modal-content ul {
-    padding-left: 20px;
-  }
-
-  button {
-    margin-top: 15px;
-    padding: 8px 18px;
-    border: none;
-    background: #4b2e2e;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-    user-select: none;
-    font-size: 14px;
-  }
-
-  button:hover {
-    background: #633c3c;
-  }
-</style>
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <h1>Malla Curricular Biónica (UPIITA-IPN)</h1>
+
   <div class="main-container">
     <div class="container-malla">
       <div id="fila1" class="fila"></div>
@@ -211,15 +142,12 @@
 
   <div id="modal" class="modal" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
-      <h3>Temario</h3>
-      <div id="temarioContent"></div>
-      <button onclick="closeModal()">Cerrar</button>
+      <span class="close" onclick="closeModal()">&times;</span>
+      <div id="modal-text"></div>
     </div>
   </div>
 
-<script>
-  // Datos de materias resumidos, con categoría y créditos
-  
+  <script>
     const materias = [ 
 { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas de los números reales y complejos, funciones y límites.','Cálculo Diferencial y sus aplicaciones.','Cálculo Integral y sus aplicaciones.','Sucesiones y Series.'], semestre:1, deps:[], categoria:'matematicas' }, 
 { id:'algebra', nombre:'Álgebra Lineal', creditos:7.5, temario:['Sistemas de ecuaciones lineales','Espacios vectoriales','Transformaciones lineales','Valores propios y vectores propios','Espacios con prducto interior'], semestre:1, deps:[], categoria:'matematicas' }, 
@@ -292,173 +220,117 @@
 { id:'trabajoii', nombre:'Trabajo Terminal II', creditos:7.5, temario:['Lineamientos generales de la dinámica de trabajo.','Administración del proyecto.','Documentación del proyecto.','Preparación de la defensa oral.','Análisis y discusión de resultados.'], semestre:10, deps:['trabajoi'], categoria:'otros' } 
     ];
 
-  // Variables para almacenar estado de materias cursadas y calificaciones
-  let cursadas = {};
-  let calificaciones = {};
 
-  // Para la demo, se inicia todo vacío
-  function inicializarEstado() {
-    cursadas = {};
-    calificaciones = {};
-  }
+    let cursadas = JSON.parse(localStorage.getItem('cursadas') || '{}');
+    let calificaciones = JSON.parse(localStorage.getItem('calificaciones') || '{}');
 
-  function renderMaterias() {
-    const fila1 = document.getElementById('fila1');
-    const fila2 = document.getElementById('fila2');
-    fila1.innerHTML = '';
-    fila2.innerHTML = '';
-
-    // Separar materias primer grupo (semestres 1-5) y segundo grupo (6-10)
-    const primeraMitad = materias.filter(m => m.semestre >= 1 && m.semestre <= 5);
-    const segundaMitad = materias.filter(m => m.semestre >= 6 && m.semestre <= 10);
-
-    // Agrupar por semestre para renderizar tarjetas
-    function agruparPorSemestre(lista) {
-      let agrupadas = {};
-      lista.forEach(m => {
-        if (!agrupadas[m.semestre]) agrupadas[m.semestre] = [];
-        agrupadas[m.semestre].push(m);
-      });
-      return agrupadas;
-    }
-
-    const agr1 = agruparPorSemestre(primeraMitad);
-    const agr2 = agruparPorSemestre(segundaMitad);
-
-    // Función para saber si materia está desbloqueada (si deps están cursadas)
-    function desbloqueada(materia) {
-      if (materia.deps.length === 0) return true;
-      return materia.deps.every(dep => cursadas[dep]);
-    }
-
-    // Render tarjetas semestre y materias en fila dada
-    function renderFila(filaElement, agrupadas) {
-      const semestres = Object.keys(agrupadas).sort((a,b) => a-b);
-      semestres.forEach(s => {
-        const card = document.createElement('div');
-        card.className = 'semestre-card';
-        const title = document.createElement('div');
-        title.className = 'semestre-title';
-        title.textContent = `Semestre ${s}`;
-        card.appendChild(title);
-
-        agrupadas[s].forEach(m => {
-          const materiaDiv = document.createElement('div');
-          materiaDiv.className = 'subject';
-          if (!desbloqueada(m)) materiaDiv.classList.add('locked');
-          if (cursadas[m.id]) materiaDiv.classList.add('aprobada');
-
-          // Área clickable para abrir temario
-          materiaDiv.addEventListener('click', () => openTemario(m));
-
-          const left = document.createElement('div');
-          left.style.display = 'flex';
-          left.style.alignItems = 'center';
-
-          const credCircle = document.createElement('div');
-          credCircle.className = 'credits ' + m.categoria;
-          credCircle.textContent = m.creditos;
-          left.appendChild(credCircle);
-
-          const nombreMat = document.createElement('div');
-          nombreMat.textContent = m.nombre;
-          left.appendChild(nombreMat);
-
-          materiaDiv.appendChild(left);
-
-          // Icono para poner calificacion, sólo si desbloqueada
-          if (desbloqueada(m)) {
-            const calIcon = document.createElement('span');
-            calIcon.className = 'calificacion-icon';
-            calIcon.textContent = calificaciones[m.id] !== undefined ? calificaciones[m.id] : '✏️';
-            calIcon.title = 'Agregar/Editar calificación';
-            calIcon.style.userSelect = 'none';
-            calIcon.addEventListener('click', e => {
-              e.stopPropagation();
-              ponerCalificacion(m.id);
-            });
-            materiaDiv.appendChild(calIcon);
-          }
-
-          card.appendChild(materiaDiv);
-        });
-
-        filaElement.appendChild(card);
+    function inicializarEstado() {
+      materias.forEach(m => {
+        if (cursadas[m.id] === undefined) {
+          cursadas[m.id] = false;
+        }
       });
     }
 
-    renderFila(fila1, agr1);
-    renderFila(fila2, agr2);
+    function renderMaterias() {
+      const fila1 = document.getElementById('fila1');
+      const fila2 = document.getElementById('fila2');
+      fila1.innerHTML = '';
+      fila2.innerHTML = '';
 
-    actualizarInfo();
-  }
+      materias.forEach(m => {
+        const div = document.createElement('div');
+        div.className = 'materia';
+        div.classList.toggle('cursada', cursadas[m.id]);
+        div.classList.toggle('bloqueada', !puedeCursar(m));
 
-  // Modal temario
-  function openTemario(materia) {
-    const modal = document.getElementById('modal');
-    const contenido = document.getElementById('temarioContent');
-    contenido.innerHTML = '';
-    materia.temario.forEach((item, i) => {
-      const li = document.createElement('li');
-      li.textContent = item;
-      contenido.appendChild(li);
-    });
-    modal.style.display = 'flex';
-  }
+        div.innerHTML = `
+          ${puedeCursar(m) ? '<div class="calificacion-icono" onclick="ponerCalificacion(\'' + m.id + '\')">✏️</div>' : ''}
+          <strong>${m.nombre}</strong>
+          <div class="creditos">${m.creditos} créditos</div>
+        `;
+        div.onclick = () => mostrarTemario(m);
 
-  function closeModal() {
-    document.getElementById('modal').style.display = 'none';
-  }
+        if (m.semestre <= 5) {
+          fila1.appendChild(div);
+        } else {
+          fila2.appendChild(div);
+        }
+      });
 
-  // Poner calificación con prompt (puedes cambiar por un modal)
-  function ponerCalificacion(id) {
-    let cal = prompt('Ingresa la calificación (0 - 10) para esta materia:');
-    if (cal === null) return; // Cancelado
-    cal = parseFloat(cal);
-    if (isNaN(cal) || cal < 0 || cal > 10) {
-      alert('Calificación inválida. Debe ser número entre 0 y 10.');
-      return;
-    }
-    calificaciones[id] = cal;
-    cursadas[id] = true;
-    renderMaterias();
-  }
+      localStorage.setItem('cursadas', JSON.stringify(cursadas));
+      localStorage.setItem('calificaciones', JSON.stringify(calificaciones));
 
-  // Actualizar info lateral
-  function actualizarInfo() {
-    const infoCursadas = document.getElementById('info-cursadas');
-    const promedioDiv = document.getElementById('promedio');
-
-    const idsCursadas = Object.keys(cursadas).filter(id => cursadas[id] === true);
-    infoCursadas.textContent = `Materias cursadas: ${idsCursadas.length}`;
-
-    if (idsCursadas.length === 0) {
-      promedioDiv.textContent = 'Promedio: --';
-      return;
+      actualizarInfo();
     }
 
-    let sumaNotas = 0;
-    let sumaCreds = 0;
+    function puedeCursar(materia) {
+      return materia.prereqs.every(id => cursadas[id] === true);
+    }
 
-    idsCursadas.forEach(id => {
-      const mat = materias.find(m => m.id === id);
-      if (mat && calificaciones[id] !== undefined) {
-        sumaNotas += calificaciones[id] * mat.creditos;
-        sumaCreds += mat.creditos;
+    function mostrarTemario(m) {
+      document.getElementById('modal').style.display = 'block';
+      document.getElementById('modal-text').innerHTML = `
+        <h2>${m.nombre}</h2>
+        <p><strong>Créditos:</strong> ${m.creditos}</p>
+        <p><strong>Temario:</strong><br>${m.temario}</p>
+      `;
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    function ponerCalificacion(id) {
+      let cal = prompt('Ingresa la calificación (0 - 10) para esta materia:');
+      if (cal === null) return;
+      cal = parseFloat(cal);
+      if (isNaN(cal) || cal < 0 || cal > 10) {
+        alert('Calificación inválida. Debe ser número entre 0 y 10.');
+        return;
       }
-    });
-
-    if (sumaCreds === 0) {
-      promedioDiv.textContent = 'Promedio: --';
-      return;
+      calificaciones[id] = cal;
+      cursadas[id] = true;
+      renderMaterias();
     }
-    const promedio = (sumaNotas / sumaCreds).toFixed(2);
-    promedioDiv.textContent = `Promedio: ${promedio}`;
-  }
 
-  inicializarEstado();
-  renderMaterias();
+    function actualizarInfo() {
+      const infoCursadas = document.getElementById('info-cursadas');
+      const promedioDiv = document.getElementById('promedio');
 
-</script>
+      const idsCursadas = Object.keys(cursadas).filter(id => cursadas[id]);
+      infoCursadas.textContent = `Materias cursadas: ${idsCursadas.length}`;
+
+      if (idsCursadas.length === 0) {
+        promedioDiv.textContent = 'Promedio: --';
+        return;
+      }
+
+      let sumaNotas = 0;
+      let sumaCreds = 0;
+
+      idsCursadas.forEach(id => {
+        const mat = materias.find(m => m.id === id);
+        if (mat && calificaciones[id] !== undefined) {
+          sumaNotas += calificaciones[id] * mat.creditos;
+          sumaCreds += mat.creditos;
+        }
+      });
+
+      if (sumaCreds === 0) {
+        promedioDiv.textContent = 'Promedio: --';
+        return;
+      }
+
+      const promedio = (sumaNotas / sumaCreds).toFixed(2);
+      promedioDiv.textContent = `Promedio: ${promedio}`;
+    }
+
+    inicializarEstado();
+    renderMaterias();
+  </script>
 </body>
 </html>
+
+  
+    
