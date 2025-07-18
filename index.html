@@ -1,150 +1,117 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Malla Curricular Biónica</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Malla Curricular Biónica (UPIITA-IPN)</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f5f5;
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      padding: 10px 15px;
+      background: #f5f5f5;
+      padding: 10px 20px;
     }
-
     h1 {
       text-align: center;
       margin-bottom: 20px;
-      color: #4b2e2e;
       user-select: none;
     }
-
     .main-container {
       display: flex;
       gap: 20px;
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
     }
-
     .container-malla {
       flex-grow: 1;
       display: flex;
       flex-direction: column;
       gap: 20px;
     }
-
     .fila {
       display: flex;
+      flex-wrap: wrap;
       gap: 12px;
       justify-content: center;
     }
-
+    .materia {
+      background: #d0d4e4;
+      padding: 8px 12px;
+      border-radius: 8px;
+      min-width: 140px;
+      position: relative;
+      text-align: center;
+      cursor: pointer;
+      font-size: 14px;
+      user-select: none;
+      transition: 0.3s;
+    }
+    .materia:hover {
+      background: #b7bdd3;
+    }
+    .materia.cursada {
+      text-decoration: line-through;
+      background: #b0e0b0;
+      color: #444;
+    }
+    .materia.bloqueada {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .icono-editar {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+    }
     .info-lateral {
       min-width: 180px;
       background: #e0e0e0;
-      padding: 16px 20px;
+      padding: 16px;
       border-radius: 8px;
       font-weight: 600;
       font-size: 16px;
       color: #333;
       height: fit-content;
-      position: sticky;
-      top: 10px;
       user-select: none;
     }
-
     .info-lateral div {
       margin-bottom: 10px;
     }
-
-    .materia {
-      width: 120px;
-      padding: 10px;
-      border-radius: 8px;
-      background: #cfd8dc;
-      text-align: center;
-      cursor: pointer;
-      position: relative;
-      transition: 0.3s;
-    }
-
-    .materia:hover {
-      transform: scale(1.05);
-    }
-
-    .materia.cursada {
-      background: #a5d6a7;
-    }
-
-    .materia.bloqueada {
-      opacity: 0.3;
-      pointer-events: none;
-    }
-
-    .calificacion-icono {
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .creditos {
-      font-size: 12px;
-      color: #555;
-      margin-top: 4px;
-    }
-
-    .modal {
-      display: none;
+    #modal {
       position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.4);
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
     }
-
-    .modal-content {
-      background-color: #fff;
-      margin: 10% auto;
+    #modal-content {
+      background: white;
       padding: 20px;
-      border-radius: 10px;
-      width: 90%;
+      border-radius: 8px;
       max-width: 500px;
-    }
-
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 24px;
-      font-weight: bold;
-      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <h1>Malla Curricular Biónica (UPIITA-IPN)</h1>
-
   <div class="main-container">
     <div class="container-malla">
       <div id="fila1" class="fila"></div>
       <div id="fila2" class="fila"></div>
     </div>
-
     <div class="info-lateral">
       <div id="info-cursadas">Materias cursadas: 0</div>
       <div id="promedio">Promedio: --</div>
     </div>
   </div>
 
-  <div id="modal" class="modal" onclick="closeModal()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <div id="modal-text"></div>
-    </div>
+  <div id="modal" onclick="closeModal()">
+    <div id="modal-content"></div>
   </div>
 
   <script>
@@ -220,61 +187,50 @@
 { id:'trabajoii', nombre:'Trabajo Terminal II', creditos:7.5, temario:['Lineamientos generales de la dinámica de trabajo.','Administración del proyecto.','Documentación del proyecto.','Preparación de la defensa oral.','Análisis y discusión de resultados.'], semestre:10, deps:['trabajoi'], categoria:'otros' } 
     ];
 
-
-    let cursadas = JSON.parse(localStorage.getItem('cursadas') || '{}');
-    let calificaciones = JSON.parse(localStorage.getItem('calificaciones') || '{}');
+    const cursadas = JSON.parse(localStorage.getItem('aprobadas') || '{}');
+    const calificaciones = JSON.parse(localStorage.getItem('calificaciones') || '{}');
 
     function inicializarEstado() {
-      materias.forEach(m => {
-        if (cursadas[m.id] === undefined) {
-          cursadas[m.id] = false;
-        }
-      });
+      renderMaterias();
     }
 
     function renderMaterias() {
-      const fila1 = document.getElementById('fila1');
-      const fila2 = document.getElementById('fila2');
-      fila1.innerHTML = '';
-      fila2.innerHTML = '';
+      document.getElementById('fila1').innerHTML = '';
+      document.getElementById('fila2').innerHTML = '';
 
       materias.forEach(m => {
-        const div = document.createElement('div');
-        div.className = 'materia';
-        div.classList.toggle('cursada', cursadas[m.id]);
-        div.classList.toggle('bloqueada', !puedeCursar(m));
+        const bloqueada = m.prerequisitos.some(id => !cursadas[id]);
+        const materiaDiv = document.createElement('div');
+        materiaDiv.className = 'materia';
+        if (cursadas[m.id]) materiaDiv.classList.add('cursada');
+        if (bloqueada && !cursadas[m.id]) materiaDiv.classList.add('bloqueada');
+        materiaDiv.textContent = m.nombre;
+        materiaDiv.onclick = () => mostrarTemario(m);
 
-        div.innerHTML = `
-          ${puedeCursar(m) ? '<div class="calificacion-icono" onclick="ponerCalificacion(\'' + m.id + '\')">✏️</div>' : ''}
-          <strong>${m.nombre}</strong>
-          <div class="creditos">${m.creditos} créditos</div>
-        `;
-        div.onclick = () => mostrarTemario(m);
-
-        if (m.semestre <= 5) {
-          fila1.appendChild(div);
-        } else {
-          fila2.appendChild(div);
+        if (!bloqueada) {
+          const icono = document.createElement('div');
+          icono.className = 'icono-editar';
+          icono.innerHTML = '✎';
+          icono.onclick = (e) => {
+            e.stopPropagation();
+            ponerCalificacion(m.id);
+          };
+          materiaDiv.appendChild(icono);
         }
+
+        document.getElementById(`fila${m.fila}`).appendChild(materiaDiv);
       });
 
-      localStorage.setItem('cursadas', JSON.stringify(cursadas));
-      localStorage.setItem('calificaciones', JSON.stringify(calificaciones));
-
       actualizarInfo();
+      localStorage.setItem('aprobadas', JSON.stringify(cursadas));
+      localStorage.setItem('calificaciones', JSON.stringify(calificaciones));
     }
 
-    function puedeCursar(materia) {
-      return materia.prereqs.every(id => cursadas[id] === true);
-    }
-
-    function mostrarTemario(m) {
-      document.getElementById('modal').style.display = 'block';
-      document.getElementById('modal-text').innerHTML = `
-        <h2>${m.nombre}</h2>
-        <p><strong>Créditos:</strong> ${m.creditos}</p>
-        <p><strong>Temario:</strong><br>${m.temario}</p>
-      `;
+    function mostrarTemario(materia) {
+      const modal = document.getElementById('modal');
+      const contenido = document.getElementById('modal-content');
+      modal.style.display = 'flex';
+      contenido.innerHTML = `<h3>${materia.nombre}</h3><p>${materia.temario}</p>`;
     }
 
     function closeModal() {
@@ -286,7 +242,7 @@
       if (cal === null) return;
       cal = parseFloat(cal);
       if (isNaN(cal) || cal < 0 || cal > 10) {
-        alert('Calificación inválida. Debe ser número entre 0 y 10.');
+        alert('Calificación inválida.');
         return;
       }
       calificaciones[id] = cal;
@@ -298,39 +254,23 @@
       const infoCursadas = document.getElementById('info-cursadas');
       const promedioDiv = document.getElementById('promedio');
 
-      const idsCursadas = Object.keys(cursadas).filter(id => cursadas[id]);
+      const idsCursadas = Object.keys(cursadas).filter(id => cursadas[id] === true);
       infoCursadas.textContent = `Materias cursadas: ${idsCursadas.length}`;
 
-      if (idsCursadas.length === 0) {
+      const califs = idsCursadas.map(id => calificaciones[id]).filter(c => typeof c === 'number');
+      if (califs.length === 0) {
         promedioDiv.textContent = 'Promedio: --';
         return;
       }
 
-      let sumaNotas = 0;
-      let sumaCreds = 0;
-
-      idsCursadas.forEach(id => {
-        const mat = materias.find(m => m.id === id);
-        if (mat && calificaciones[id] !== undefined) {
-          sumaNotas += calificaciones[id] * mat.creditos;
-          sumaCreds += mat.creditos;
-        }
-      });
-
-      if (sumaCreds === 0) {
-        promedioDiv.textContent = 'Promedio: --';
-        return;
-      }
-
-      const promedio = (sumaNotas / sumaCreds).toFixed(2);
+      const suma = califs.reduce((acc, val) => acc + val, 0);
+      const promedio = (suma / califs.length).toFixed(2);
       promedioDiv.textContent = `Promedio: ${promedio}`;
     }
 
     inicializarEstado();
-    renderMaterias();
   </script>
 </body>
 </html>
 
-  
     
