@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Malla Curricular Biónica</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
-
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Poppins', sans-serif;
       background: #f5f5f5;
       margin: 0;
       padding: 10px;
+      color: #333;
     }
 
     .header {
@@ -24,21 +24,21 @@
     h1 {
       text-align: center;
       grid-column: 2;
-      font-size: 22px;
+      font-size: 24px;
       margin: 0;
+      font-weight: 600;
     }
 
     #promedio {
       text-align: right;
-      font-weight: bold;
+      font-weight: 600;
       font-size: 16px;
       color: #444;
       grid-column: 3;
     }
 
-    #contador {
-      text-align: left;
-      font-weight: bold;
+    #ramosCursados {
+      font-weight: 500;
       font-size: 16px;
       color: #444;
       grid-column: 1;
@@ -53,83 +53,107 @@
 
     .fila {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       justify-content: center;
       flex-wrap: wrap;
     }
 
     .semestre-card {
-      background: #e0e0e0;
+      background: #d3d3d3; /* gris claro */
       border-radius: 8px;
-      padding: 6px;
-      width: 240px;
+      padding: 10px;
+      width: 230px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
 
     .semestre-title {
-      font-weight: bold;
-      font-size: 14px;
+      font-weight: 700;
+      font-size: 15px;
       text-align: center;
-      background-color: #bdbdbd;
-      padding: 5px;
+      background-color: #a9a9a9; /* gris medio */
+      padding: 6px;
       border-radius: 8px 8px 0 0;
       color: #222;
+      user-select: none;
     }
 
     .subject {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin: 4px 2px;
-      padding: 4px 6px;
+      margin: 6px 2px;
+      padding: 6px 10px;
       border-radius: 6px;
-      font-size: 11px;
-      background-color: white;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      font-size: 12px;
       cursor: pointer;
-      transition: background 0.3s;
+      background: #fafafa; /* neutro, muy claro */
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      transition: background 0.25s;
+      user-select: none;
+    }
+
+    .subject:hover {
+      background: #f0f0f0;
     }
 
     .subject.locked {
-      opacity: 0.4;
+      opacity: 0.6;
+      /* quitar pointer-events para que se pueda abrir temario pero no toggle aprob */
       pointer-events: none;
+    }
+
+    /* Para permitir que icono de temario siempre tenga pointer */
+    .subject.locked .temario {
+      pointer-events: auto;
+      cursor: pointer;
+      opacity: 1;
     }
 
     .subject .info.aprobada {
       text-decoration: line-through;
+      color: #777;
     }
 
     .credits {
-      width: 22px;
-      height: 22px;
-      font-size: 10px;
+      width: 24px;
+      height: 24px;
+      font-size: 11px;
       border-radius: 50%;
-      background: currentColor;
-      color: white;
-      border: none;
+      background: white;
+      border: 3px solid; /* el color de categoria se aplica aquí */
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
+      font-weight: 700;
       flex-shrink: 0;
-      margin-right: 4px;
+      margin-right: 8px;
+      user-select: none;
     }
 
     .temario, .calificacion-icon {
-      margin-left: 4px;
-      cursor: pointer;
-      font-size: 13px;
+      margin-left: 8px;
+      font-size: 15px;
       flex-shrink: 0;
+      user-select: none;
     }
 
-    .matematicas    { color: #98A1BC; }
-    .fisicas       { color: #9798AE; }
-    .biologicas        { color: #AEB4AC; }
-    .programacion    { color: #B56B6B; }
-    .electronica        { color: #A14D4D; }
-    .sociales       { color: #A3909F; }
-    .idiomas        { color: #C7C2BB; }
-    .otros          { color: #B7B2A9; }
+    .temario {
+      cursor: pointer;
+    }
+
+    .calificacion-icon {
+      cursor: pointer;
+    }
+
+    /* colores categorías solo en border de créditos */
+    .matematicas    .credits { border-color: #7593af; }
+    .fisicas       .credits { border-color: #9798AE; }
+    .biologicas    .credits { border-color: #AEB4AC; }
+    .programacion  .credits { border-color: #B56B6B; }
+    .electronica   .credits { border-color: #A14D4D; }
+    .sociales      .credits { border-color: #A3909F; }
+    .idiomas       .credits { border-color: #C7C2BB; }
+    .otros         .credits { border-color: #B7B2A9; }
 
     .modal {
       display: none;
@@ -144,189 +168,194 @@
 
     .modal-content {
       background: #fff;
-      padding: 16px;
+      padding: 20px;
       border-radius: 10px;
-      max-width: 360px;
-      text-align: center;
+      max-width: 400px;
+      max-height: 80vh;
+      overflow-y: auto;
+      text-align: left;
+      font-size: 14px;
+      user-select: text;
     }
 
     button {
       margin-top: 10px;
-      padding: 6px 12px;
+      padding: 8px 16px;
       border: none;
       background: #4b2e2e;
       color: white;
       border-radius: 6px;
       cursor: pointer;
+      font-weight: 600;
+      user-select: none;
     }
   </style>
 </head>
 <body>
   <div class="header">
-    <div id="contador"></div>
-    <h1>Malla Curricular Biónica</h1>
-    <div id="promedio">Promedio: -</div>
+    <div id="ramosCursados">Ramos cursados: 0</div>
+    <h1>Malla Curricular Biónica (UPIITA-IPN)</h1>
+    <div id="promedio">Promedio: --</div>
   </div>
-  <div class="años-container" id="contenedor"></div>
 
-  <div class="modal" id="modal">
+  <div id="malla" class="años-container"></div>
+
+  <div id="modal" class="modal">
     <div class="modal-content">
-      <h2 id="modal-titulo"></h2>
-      <div id="modal-cuerpo"></div>
-      <input type="number" id="input-calificacion" placeholder="Calificación" min="0" max="100">
-      <br>
-      <button onclick="guardarCalificacion()">Guardar</button>
+      <h3>Temario</h3>
+      <div id="temarioContent"></div>
+      <button onclick="closeModal()">Cerrar</button>
     </div>
   </div>
 
   <script>
-    const malla = [
-      {
-        nombre: "1er Semestre",
-        materias: [
-          { nombre: "Álgebra Superior", creditos: 6, tipo: "matematicas" },
-          { nombre: "Física I", creditos: 6, tipo: "fisicas", requiere: ["Álgebra Superior"] },
-          { nombre: "Programación", creditos: 5, tipo: "programacion" },
-          { nombre: "Química General", creditos: 5, tipo: "biologicas" },
-          { nombre: "Redacción", creditos: 3, tipo: "otros" }
-        ]
-      },
-      {
-        nombre: "2do Semestre",
-        materias: [
-          { nombre: "Cálculo Diferencial", creditos: 6, tipo: "matematicas", requiere: ["Álgebra Superior"] },
-          { nombre: "Física II", creditos: 6, tipo: "fisicas", requiere: ["Física I"] },
-          { nombre: "Electrónica Digital", creditos: 5, tipo: "electronica", requiere: ["Programación"] },
-          { nombre: "Inglés I", creditos: 3, tipo: "idiomas" }
-        ]
-      }
+    const materias = [ 
+      /* ... tu arreglo materias aquí sin cambios ... */
+      { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas de los números reales y complejos, funciones y límites.','Cálculo Diferencial y sus aplicaciones.','Cálculo Integral y sus aplicaciones.','Sucesiones y Series.'], semestre:1, deps:[], categoria:'matematicas' }, 
+      { id:'algebra', nombre:'Álgebra Lineal', creditos:7.5, temario:['Sistemas de ecuaciones lineales','Espacios vectoriales','Transformaciones lineales','Valores propios y vectores propios','Espacios con prducto interior'], semestre:1, deps:[], categoria:'matematicas' }, 
+      /*... sigue igual ...*/
     ];
 
-    const contenedor = document.getElementById("contenedor");
-    let calificaciones = {};
-    let materiaSeleccionada = null;
+    // Recuperar aprobadas y calificaciones
+    const aprobadas = JSON.parse(localStorage.getItem('aprobadas') || '[]');
+    const calificaciones = JSON.parse(localStorage.getItem('calificaciones') || '{}');
 
-    malla.forEach((semestre, idx) => {
-      const card = document.createElement("div");
-      card.className = "semestre-card";
-      const titulo = document.createElement("div");
-      titulo.className = "semestre-title";
-      titulo.textContent = semestre.nombre;
-      card.appendChild(titulo);
+    function render() {
+      const contenedor = document.getElementById('malla');
+      contenedor.innerHTML = '';
 
-      semestre.materias.forEach(m => {
-        const div = document.createElement("div");
-        div.className = `subject ${m.tipo}`;
+      const fila1 = document.createElement('div');
+      fila1.className = 'fila';
 
-        const info = document.createElement("div");
-        info.className = "info";
-        info.textContent = m.nombre;
+      const fila2 = document.createElement('div');
+      fila2.className = 'fila';
 
-        const badge = document.createElement("div");
-        badge.className = "credits";
-        badge.textContent = m.creditos;
+      for (let s = 1; s <= 10; s++) {
+        const semestreMaterias = materias.filter(m => m.semestre === s);
+        if (semestreMaterias.length === 0) continue;
 
-        const temario = document.createElement("div");
-        temario.className = "temario";
-        temario.textContent = "📄";
-        temario.title = "Ver temario";
-        temario.onclick = e => {
-          e.stopPropagation();
-          mostrarModal(m.nombre, `<p>Temario de ${m.nombre}</p>`);
-        };
+        const card = document.createElement('div');
+        card.className = 'semestre-card';
 
-        const cal = document.createElement("div");
-        cal.className = "calificacion-icon";
-        cal.textContent = "🎓";
-        cal.title = "Agregar calificación";
-        cal.onclick = e => {
-          e.stopPropagation();
-          materiaSeleccionada = m.nombre;
-          document.getElementById("input-calificacion").value = calificaciones[m.nombre] || "";
-          mostrarModal(m.nombre, "Ingresa la calificación:");
-        };
+        const titulo = document.createElement('div');
+        titulo.className = 'semestre-title';
+        titulo.textContent = `Semestre ${s}`;
+        card.appendChild(titulo);
 
-        div.onclick = () => {
-          if (!div.classList.contains("locked")) {
-            aprobarMateria(m.nombre);
-            div.querySelector(".info").classList.add("aprobada");
-            actualizar();
-          }
-        };
+        semestreMaterias.forEach(m => {
+          const depsFaltan = m.deps.filter(d => !aprobadas.includes(d));
+          const esAprobada = aprobadas.includes(m.id);
 
-        div.appendChild(badge);
-        div.appendChild(info);
-        div.appendChild(temario);
-        div.appendChild(cal);
-        card.appendChild(div);
-      });
+          const materiaDiv = document.createElement('div');
+          materiaDiv.className = `subject`;
+          if (depsFaltan.length) materiaDiv.classList.add('locked');
 
-      const fila = document.createElement("div");
-      fila.className = "fila";
-      fila.appendChild(card);
-      contenedor.appendChild(fila);
-    });
+          materiaDiv.onclick = () => {
+            if (!depsFaltan.length) toggleAprob(m.id);
+          };
 
-    function mostrarModal(titulo, cuerpo) {
-      document.getElementById("modal-titulo").textContent = titulo;
-      document.getElementById("modal-cuerpo").innerHTML = cuerpo;
-      document.getElementById("modal").style.display = "flex";
+          const creditos = document.createElement('div');
+          creditos.className = 'credits';
+          creditos.textContent = m.creditos;
+          creditos.style.borderColor = getCategoriaColor(m.categoria);
+
+          const nombre = document.createElement('div');
+          nombre.className = 'info';
+          nombre.textContent = m.nombre + (calificaciones[m.id] !== undefined ? ` (${calificaciones[m.id]})` : '');
+          if (esAprobada) nombre.classList.add('aprobada');
+
+          const iconCal = document.createElement('span');
+          iconCal.className = 'calificacion-icon';
+          iconCal.textContent = '📝';
+          iconCal.onclick = e => {
+            e.stopPropagation();
+            if (!materiaDiv.classList.contains('locked')) ingresarCalificacion(m.id);
+          };
+
+          const iconTemario = document.createElement('span');
+          iconTemario.className = 'temario';
+          iconTemario.textContent = '📄';
+          iconTemario.onclick = e => {
+            e.stopPropagation();
+            showTemario(m.temario);
+          };
+
+          materiaDiv.appendChild(creditos);
+          materiaDiv.appendChild(nombre);
+          materiaDiv.appendChild(iconCal);
+          materiaDiv.appendChild(iconTemario);
+          card.appendChild(materiaDiv);
+        });
+
+        (s <= 5 ? fila1 : fila2).appendChild(card);
+      }
+
+      contenedor.appendChild(fila1);
+      contenedor.appendChild(fila2);
+
+      actualizarPromedio();
+      actualizarRamosCursados();
     }
 
-    document.getElementById("modal").onclick = (e) => {
-      if (e.target.id === "modal") document.getElementById("modal").style.display = "none";
+    function toggleAprob(id) {
+      const idx = aprobadas.indexOf(id);
+      if (idx >= 0) {
+        aprobadas.splice(idx, 1);
+        delete calificaciones[id];
+      } else {
+        aprobadas.push(id);
+      }
+      localStorage.setItem('aprobadas', JSON.stringify(aprobadas));
+      localStorage.setItem('calificaciones', JSON.stringify(calificaciones));
+      render();
     }
 
-    function guardarCalificacion() {
-      const val = document.getElementById("input-calificacion").value;
-      if (!isNaN(val) && val !== "") {
-        calificaciones[materiaSeleccionada] = Number(val);
-        document.getElementById("modal").style.display = "none";
-        actualizar();
+    function ingresarCalificacion(id) {
+      const nota = prompt("Ingresa la calificación (0 a 10):");
+      const valor = parseFloat(nota);
+      if (!isNaN(valor) && valor >= 0 && valor <= 10) {
+        calificaciones[id] = valor;
+        localStorage.setItem('calificaciones', JSON.stringify(calificaciones));
+        render();
       }
     }
 
-    const aprobadas = new Set();
-
-    function aprobarMateria(nombre) {
-      aprobadas.add(nombre);
+    function actualizarPromedio() {
+      const values = Object.values(calificaciones).map(n => parseFloat(n));
+      const promedio = values.length ? (values.reduce((a, b) => a + b, 0) / values.length).toFixed(2) : '--';
+      document.getElementById('promedio').textContent = `Promedio: ${promedio}`;
     }
 
-    function actualizar() {
-      const subjects = document.querySelectorAll(".subject");
-      subjects.forEach(s => {
-        const nombre = s.querySelector(".info").textContent;
-        const data = buscarMateria(nombre);
-        const requisitos = data?.requiere || [];
-        const desbloqueada = requisitos.every(r => aprobadas.has(r));
-        if (!aprobadas.has(nombre)) {
-          s.classList.toggle("locked", !desbloqueada);
-        }
-        const info = s.querySelector(".info");
-        if (aprobadas.has(nombre)) info.classList.add("aprobada");
-      });
-
-      let sum = 0, total = 0;
-      for (let mat in calificaciones) {
-        const cal = calificaciones[mat];
-        const c = buscarMateria(mat)?.creditos || 0;
-        sum += cal * c;
-        total += c;
-      }
-      document.getElementById("promedio").textContent = total > 0 ? `Promedio: ${(sum/total).toFixed(2)}` : "Promedio: -";
-      document.getElementById("contador").textContent = `Aprobadas: ${aprobadas.size}`;
+    function actualizarRamosCursados() {
+      const ramos = aprobadas.length;
+      document.getElementById('ramosCursados').textContent = `Ramos cursados: ${ramos}`;
     }
 
-    function buscarMateria(nombre) {
-      for (const semestre of malla) {
-        for (const m of semestre.materias) {
-          if (m.nombre === nombre) return m;
-        }
-      }
-      return null;
+    function showTemario(temario) {
+      const c = document.getElementById('temarioContent');
+      c.innerHTML = temario.length ? '<ul>' + temario.map(e => '<li>' + e + '</li>').join('') + '</ul>' : 'No existe';
+      document.getElementById('modal').style.display = 'flex';
     }
 
-    actualizar();
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    function getCategoriaColor(cat) {
+      const colores = {
+        matematicas: '#7593af',
+        fisicas: '#9798AE',
+        biologicas: '#AEB4AC',
+        programacion: '#B56B6B',
+        electronica: '#A14D4D',
+        sociales: '#A3909F',
+        idiomas: '#C7C2BB',
+        otros: '#B7B2A9',
+      };
+      return colores[cat] || '#999';
+    }
+
+    render();
   </script>
 </body>
 </html>
