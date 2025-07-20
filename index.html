@@ -65,7 +65,6 @@
       border-radius: 10px;
       box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
     }
-
     .subject.matematicas    { background: #a4b5c8; }
     .subject.fisicas       { background: #bbbccf; }
     .subject.biologicas    { background: #c6cac5; }
@@ -74,7 +73,6 @@
     .subject.sociales      { background: #bfaeb9; }
     .subject.idiomas       { background: #d0ccc6; }
     .subject.otros         { background: #c7c3bb; }
-
     .credits.matematicas    { background: #7593af; }
     .credits.fisicas       { background: #9798AE; }
     .credits.biologicas    { background: #AEB4AC; color: black; }
@@ -98,7 +96,7 @@
   </div>
   <script>
     const materias = [
-   { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas de los números reales y complejos, funciones y límites.','Cálculo Diferencial y sus aplicaciones.','Cálculo Integral y sus aplicaciones.','Sucesiones y Series.'], semestre:1, deps:[], categoria:'matematicas' }, 
+      { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas de los números reales y complejos, funciones y límites.','Cálculo Diferencial y sus aplicaciones.','Cálculo Integral y sus aplicaciones.','Sucesiones y Series.'], semestre:1, deps:[], categoria:'matematicas' }, 
 { id:'algebra', nombre:'Álgebra Lineal', creditos:7.5, temario:['Sistemas de ecuaciones lineales','Espacios vectoriales','Transformaciones lineales','Valores propios y vectores propios','Espacios con prducto interior'], semestre:1, deps:[], categoria:'matematicas' }, 
 { id:'biocel', nombre:'Biología Celular', creditos:7.5, temario:['Fundamentos físicos y químicos.','Estructura celular.','Almacenamiento y expresión de la información genética.','Función celular.','Bases de fisiología y anatomía.'], semestre:1, deps:[], categoria:'biologicas' }, 
 { id:'quimica', nombre:'Química Orgánica', creditos:7.5, temario:['Introducción a la Química Orgánica.','Hidrocarburos.','Derivados de los hidrocarburos.','Carbohidratos.','Aminoácidos y proteínas'], semestre:1, deps:[], categoria:'biologicas' },
@@ -230,6 +228,7 @@
 
             const nombre = document.createElement('span');
             nombre.textContent = m.nombre;
+            nombre.title = m.temario;
 
             const creditos = document.createElement('span');
             creditos.className = `credits ${m.categoria}`;
