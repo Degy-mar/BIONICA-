@@ -49,12 +49,18 @@
     }
 
     .años-container {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      align-items: center;
-      user-select: none;
-    }
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 30px;
+  user-select: none;
+}
+
+.columna {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 
     .fila {
       display: flex;
@@ -299,7 +305,84 @@ function render() {
   // Obtener semestres únicos y ordenarlos
   const semestres = [...new Set(materias.map(m => m.semestre))].sort((a,b)=>a-b);
 
-  semestres.forEach(sem => {
+ const columna1 = document.createElement('div');
+columna1.className = 'columna';
+const columna2 = document.createElement('div');
+columna2.className = 'columna';
+
+semestres.forEach(sem => {
+  const card = document.createElement('div');
+  card.className = 'semestre-card';
+
+  const titulo = document.createElement('div');
+  titulo.className = 'semestre-title';
+  titulo.textContent = `Semestre ${sem}`;
+  card.appendChild(titulo);
+
+  const fila = document.createElement('div');
+  fila.style.display = 'flex';
+  fila.style.gap = '6px';
+  fila.style.flexWrap = 'nowrap';
+  fila.style.justifyContent = 'center';
+  fila.style.flexDirection = 'row';
+
+  const materiasDelSem = materias.filter(m => m.semestre === sem);
+
+  materiasDelSem.forEach(m => {
+    const depsFaltan = m.deps.filter(d => !aprobadas.includes(d));
+    const bloqueada = depsFaltan.length > 0;
+    const aprobada = aprobadas.includes(m.id);
+
+    const divMat = document.createElement('div');
+    divMat.className = 'subject ' + m.categoria + (bloqueada ? ' locked' : '');
+    divMat.style.backgroundColor = '#f9f5f0';
+
+    const creditosDiv = document.createElement('div');
+    creditosDiv.className = 'credits';
+    creditosDiv.textContent = m.creditos;
+
+    const nombreDiv = document.createElement('div');
+    nombreDiv.className = 'info';
+    nombreDiv.textContent = m.nombre + (calificaciones[m.id] !== undefined ? ` (${calificaciones[m.id]})` : '');
+    if (aprobada) nombreDiv.classList.add('aprobada');
+
+    const iconCal = document.createElement('span');
+    iconCal.className = 'calificacion-icon';
+    iconCal.textContent = '📝';
+    iconCal.style.cursor = bloqueada ? 'not-allowed' : 'pointer';
+    iconCal.onclick = (e) => {
+      e.stopPropagation();
+      if (!bloqueada) ingresarCalificacion(m.id);
+    };
+
+    const iconTem = document.createElement('span');
+    iconTem.className = 'temario';
+    iconTem.textContent = '📄';
+    iconTem.onclick = (e) => {
+      e.stopPropagation();
+      showTemario(m.temario);
+    };
+
+    divMat.appendChild(creditosDiv);
+    divMat.appendChild(nombreDiv);
+    divMat.appendChild(iconCal);
+    divMat.appendChild(iconTem);
+
+    fila.appendChild(divMat);
+  });
+
+  card.appendChild(fila);
+
+  if (sem <= 5) {
+    columna1.appendChild(card);
+  } else {
+    columna2.appendChild(card);
+  }
+});
+
+cont.appendChild(columna1);
+cont.appendChild(columna2);
+ semestres.forEach(sem => {
     // Crear contenedor del semestre
     const card = document.createElement('div');
     card.className = 'semestre-card';
