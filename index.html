@@ -26,12 +26,25 @@
       margin: 0;
     }
 
-    #promedio {
-      text-align: right;
-      font-weight: bold;
-      font-size: 16px;
-      color: #444;
-      grid-column: 3;
+    .main-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    #malla {
+      flex: 1;
+    }
+
+    .resumen-box {
+      min-width: 200px;
+      background: #fff;
+      padding: 12px 16px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      font-size: 14px;
+      line-height: 1.6;
     }
 
     .años-container {
@@ -76,7 +89,7 @@
       font-size: 11px;
       cursor: pointer;
       transition: background 0.3s;
-      background: white;
+      background: #f9f5f0; /* Café muy claro */
     }
 
     .subject.locked {
@@ -103,6 +116,15 @@
       margin-right: 4px;
     }
 
+    .subject.matematicas .credits { background: #7593af; }
+    .subject.fisicas .credits { background: #9798AE; }
+    .subject.biologicas .credits { background: #AEB4AC; }
+    .subject.programacion .credits { background: #B56B6B; }
+    .subject.electronica .credits { background: #A14D4D; }
+    .subject.sociales .credits { background: #A3909F; }
+    .subject.idiomas .credits { background: #C7C2BB; }
+    .subject.otros .credits { background: #B7B2A9; }
+
     .temario, .calificacion-icon {
       margin-left: 4px;
       cursor: pointer;
@@ -112,12 +134,12 @@
 
     .matematicas    { background: #7593af; }
     .fisicas       { background: #9798AE; }
-    .biologicas        { background: #AEB4AC; }
-    .programacion    { background: #B56B6B; }
-    .electronica        { background: #A14D4D; }
-    .sociales       { background: #A3909F; }
-    .idiomas        { background: #C7C2BB; }
-    .otros          { background: #B7B2A9; }
+    .biologicas    { background: #AEB4AC; }
+    .programacion  { background: #B56B6B; }
+    .electronica   { background: #A14D4D; }
+    .sociales      { background: #A3909F; }
+    .idiomas       { background: #C7C2BB; }
+    .otros         { background: #B7B2A9; }
 
     .modal {
       display: none;
@@ -147,19 +169,6 @@
       border-radius: 6px;
       cursor: pointer;
     }
-
-    .resumen-box {
-      position: fixed;
-      top: 80px;
-      right: 20px;
-      background: #fff;
-      padding: 12px 16px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      font-size: 14px;
-      z-index: 1000;
-      line-height: 1.6;
-    }
   </style>
 </head>
 <body>
@@ -170,7 +179,7 @@
   <div class="main-container">
     <div id="malla" class="años-container"></div>
 
-    <div id="resumen">
+    <div id="resumen" class="resumen-box">
       <div><strong>Materias cursadas:</strong> <span id="cont-materias">--</span></div>
       <div><strong>Créditos aprobados:</strong> <span id="cont-creditos">--</span></div>
       <div><strong>Promedio:</strong> <span id="promedio">--</span></div>
