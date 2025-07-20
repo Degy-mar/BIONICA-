@@ -47,17 +47,44 @@
     padding: 8px 15px;
     width: 180px;
   }
-  #creditos {
-    grid-column: 2;
-    text-align: center;
-    font-weight: bold;
-    font-size: 18px;
-    color: black;
-    border: 2px solid #7593af;
-    border-radius: 10px;
-    padding: 8px 15px;
-    width: 140px;
-  }
+     /* Fondo un poco más claro que créditos */
+    .subject.matematicas    { background: #a4b5c8; }
+    .subject.fisicas       { background: #bbbccf; }
+    .subject.biologicas    { background: #c6cac5; }
+    .subject.programacion  { background: #c89191; }
+    .subject.electronica   { background: #be6a6a; }
+    .subject.sociales      { background: #bfaeb9; }
+    .subject.idiomas       { background: #d0ccc6; }
+    .subject.otros         { background: #c7c3bb; }
+    /* Créditos */
+    .credits {
+      width: 24px;
+      height: 24px;
+      font-size: 11px;
+      border-radius: 50%;
+      border: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      flex-shrink: 0;
+      margin-right: 6px;
+      color: white;
+      user-select: none;
+    }
+    .credits.matematicas    { background: #7593af; }
+    .credits.fisicas       { background: #9798AE; }
+    .credits.biologicas    { background: #AEB4AC; color: black; }
+    .credits.programacion  { background: #B56B6B; }
+    .credits.electronica   { background: #A14D4D; }
+    .credits.sociales      { background: #A3909F; }
+    .credits.idiomas       { background: #C7C2BB; color: black; }
+    .credits.otros         { background: #B7B2A9; color: black; }
+    .info {
+      flex-grow: 1;
+      user-select: text;
+    }
+
   .años-container {
     display: flex;
     flex-direction: column;
