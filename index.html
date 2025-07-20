@@ -98,7 +98,7 @@
   </div>
   <script>
     const materias = [
-   { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas de los números reales y complejos, funciones y límites.','Cálculo Diferencial y sus aplicaciones.','Cálculo Integral y sus aplicaciones.','Sucesiones y Series.'], semestre:1, deps:[], categoria:'matematicas' }, 
+  { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas de los números reales y complejos, funciones y límites.','Cálculo Diferencial y sus aplicaciones.','Cálculo Integral y sus aplicaciones.','Sucesiones y Series.'], semestre:1, deps:[], categoria:'matematicas' }, 
 { id:'algebra', nombre:'Álgebra Lineal', creditos:7.5, temario:['Sistemas de ecuaciones lineales','Espacios vectoriales','Transformaciones lineales','Valores propios y vectores propios','Espacios con prducto interior'], semestre:1, deps:[], categoria:'matematicas' }, 
 { id:'biocel', nombre:'Biología Celular', creditos:7.5, temario:['Fundamentos físicos y químicos.','Estructura celular.','Almacenamiento y expresión de la información genética.','Función celular.','Bases de fisiología y anatomía.'], semestre:1, deps:[], categoria:'biologicas' }, 
 { id:'quimica', nombre:'Química Orgánica', creditos:7.5, temario:['Introducción a la Química Orgánica.','Hidrocarburos.','Derivados de los hidrocarburos.','Carbohidratos.','Aminoácidos y proteínas'], semestre:1, deps:[], categoria:'biologicas' },
@@ -171,68 +171,6 @@
 
 
     let materiasAprobadas = JSON.parse(localStorage.getItem('materiasAprobadas')) || {};
-
-    function renderMalla() {
-      document.getElementById('columna1').innerHTML = '';
-      document.getElementById('columna2').innerHTML = '';
-      let totalCreditos = 0;
-      let sumaCalificaciones = 0;
-      let totalCursadas = 0;
-
-      for (let i = 1; i <= 10; i++) {
-        const col = i <= 5 ? 'columna1' : 'columna2';
-        const semestreBox = document.createElement('div');
-        semestreBox.className = 'semestre';
-        semestreBox.innerHTML = `<h3>Semestre ${i}</h3>`;
-
-        materias.filter(m => m.semestre === i).forEach(m => {
-          const subj = document.createElement('div');
-          subj.className = `subject ${m.categoria}`;
-          const desbloqueada = m.deps.every(d => materiasAprobadas[d] !== undefined);
-
-          if (!desbloqueada) subj.classList.add('locked');
-
-          const nombre = document.createElement('span');
-          nombre.textContent = m.nombre;
-
-          const creditos = document.createElement('span');
-          creditos.className = `credits ${m.categoria}`;
-          creditos.textContent = `${m.creditos} créditos`;
-
-          const calIcon = document.createElement('span');
-          calIcon.className = 'calificacion-icon';
-          calIcon.title = materiasAprobadas[m.id]
-            ? `Calificación: ${materiasAprobadas[m.id]} (clic para cambiar o quitar)`
-            : 'Ingresar calificación';
-          calIcon.textContent = materiasAprobadas[m.id]
-            ? `⭐ ${materiasAprobadas[m.id]}`
-            : '☆';
-
-          calIcon.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleAprobada(m.id);
-          });
-
-          subj.appendChild(nombre);
-          subj.appendChild(creditos);
-          subj.appendChild(calIcon);
-
-          semestreBox.appendChild(subj);
-
-          if (materiasAprobadas[m.id] !== undefined) {
-            totalCreditos += m.creditos;
-            sumaCalificaciones += parseFloat(materiasAprobadas[m.id]);
-            totalCursadas++;
-          }
-        });
-        document.getElementById(col).appendChild(semestreBox);
-      }
-
-      const promedio = totalCursadas ? (sumaCalificaciones / totalCursadas).toFixed(2) : 'N/A';
-      document.getElementById('promedio').textContent = `Promedio: ${promedio}`;
-      document.getElementById('materiasCursadas').textContent = `Materias cursadas: ${totalCursadas}`;
-      document.getElementById('creditos').textContent = `Créditos obtenidos: ${totalCreditos}`;
-    }
 
     function toggleAprobada(id) {
       const cal = prompt("Ingresa la calificación de la materia (0-10):");
