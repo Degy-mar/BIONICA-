@@ -1,240 +1,104 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Malla Curricular Biónica</title>
-<style>
-  body {
-    font-family: sans-serif;
-    background: #f5f5f5;
-    margin: 0;
-    padding: 10px;
-    color: black;
-  }
-  .header {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  h1 {
-    text-align: center;
-    grid-column: 2;
-    font-size: 22px;
-    margin: 0;
-    color: black;
-  }
-  #promedio {
-    grid-column: 3;
-    text-align: right;
-    font-weight: bold;
-    font-size: 18px;
-    color: black;
-    border: 2px solid #7593af;
-    border-radius: 10px;
-    padding: 8px 15px;
-    width: 120px;
-  }
-  #cursadas {
-    grid-column: 1;
-    text-align: left;
-    font-weight: bold;
-    font-size: 18px;
-    color: black;
-    border: 2px solid #7593af;
-    border-radius: 10px;
-    padding: 8px 15px;
-    width: 180px;
-  }
-  #creditos {
-    grid-column: 2;
-    text-align: center;
-    font-weight: bold;
-    font-size: 18px;
-    color: black;
-    border: 2px solid #7593af;
-    border-radius: 10px;
-    padding: 8px 15px;
-    width: 140px;
-  }
-  .años-container {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    align-items: center;
-  }
-  .fila {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-  }
-  .semestre-card {
-    background: #fef6e4;
-    border-radius: 8px;
-    padding: 6px;
-    width: 220px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  .semestre-title {
-    font-weight: bold;
-    font-size: 14px;
-    text-align: center;
-    background-color: #f1ddbb;
-    padding: 5px;
-    border-radius: 8px 8px 0 0;
-    color: black;
-  }
-  .subject {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 4px 2px;
-    padding: 4px 6px;
-    border-radius: 6px;
-    font-size: 11px;
-    cursor: pointer;
-    transition: background 0.3s;
-    color: black;
-  }
-  .subject.locked {
-    opacity: 0.4;
-    pointer-events: none;
-  }
-  .subject .info.aprobada {
-    text-decoration: line-through;
-  }
-  .credits {
-    width: 22px;
-    height: 22px;
-    font-size: 10px;
-    border-radius: 50%;
-    background: #7593af;
-    border: 1px solid #4c6b91;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    flex-shrink: 0;
-    margin-right: 4px;
-    color: black;
-  }
-  .matematicas {
-    background: #7593af;
-    border: 1px solid #4c6b91;
-  }
-  .matematicas.subject {
-    background: #9aadcf;
-  }
-  .fisicas {
-    background: #9798AE;
-    border: 1px solid #6e6f8b;
-  }
-  .fisicas.subject {
-    background: #b0b1c2;
-  }
-  .biologicas {
-    background: #AEB4AC;
-    border: 1px solid #7e857d;
-  }
-  .biologicas.subject {
-    background: #c3c8c1;
-  }
-  .programacion {
-    background: #B56B6B;
-    border: 1px solid #804646;
-  }
-  .programacion.subject {
-    background: #c08c8c;
-  }
-  .electronica {
-    background: #A14D4D;
-    border: 1px solid #6d3636;
-  }
-  .electronica.subject {
-    background: #c06868;
-  }
-  .sociales {
-    background: #A3909F;
-    border: 1px solid #6d5d66;
-  }
-  .sociales.subject {
-    background: #b9aab4;
-  }
-  .idiomas {
-    background: #C7C2BB;
-    border: 1px solid #8c887f;
-  }
-  .idiomas.subject {
-    background: #d1ccc4;
-  }
-  .otros {
-    background: #B7B2A9;
-    border: 1px solid #7f7b73;
-  }
-  .otros.subject {
-    background: #cdc9c1;
-  }
-  .info {
-    flex-grow: 1;
-    color: black;
-  }
-  .temario, .calificacion-icon {
-    margin-left: 4px;
-    cursor: pointer;
-    font-size: 13px;
-    flex-shrink: 0;
-    color: black;
-  }
-  .modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    right: 0; bottom: 0;
-    background: rgba(0,0,0,0.6);
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-  }
-  .modal-content {
-    background: #fff;
-    padding: 16px;
-    border-radius: 10px;
-    max-width: 360px;
-    text-align: center;
-  }
-  button {
-    margin-top: 10px;
-    padding: 6px 12px;
-    border: none;
-    background: #4b2e2e;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>Malla Curricular Interactiva</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f1f1f1;
+      color: black;
+    }
+    .container {
+      display: flex;
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      padding: 10px;
+    }
+    .semestre {
+      background: white;
+      border-radius: 10px;
+      margin: 10px;
+      padding: 10px;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    }
+    .semestre h3 {
+      margin-top: 0;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 4px;
+    }
+    .subject {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 5px 0;
+      padding: 5px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      color: black;
+    }
+    .subject.locked {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .credits {
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 12px;
+      color: white;
+    }
+    .calificacion-icon {
+      margin-left: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .resumen {
+      width: 260px;
+      background: white;
+      padding: 20px;
+      margin: 10px;
+      border-radius: 10px;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .subject.matematicas    { background: #a4b5c8; }
+    .subject.fisicas       { background: #bbbccf; }
+    .subject.biologicas    { background: #c6cac5; }
+    .subject.programacion  { background: #c89191; }
+    .subject.electronica   { background: #be6a6a; }
+    .subject.sociales      { background: #bfaeb9; }
+    .subject.idiomas       { background: #d0ccc6; }
+    .subject.otros         { background: #c7c3bb; }
+
+    .credits.matematicas    { background: #7593af; }
+    .credits.fisicas       { background: #9798AE; }
+    .credits.biologicas    { background: #AEB4AC; color: black; }
+    .credits.programacion  { background: #B56B6B; }
+    .credits.electronica   { background: #A14D4D; }
+    .credits.sociales      { background: #A3909F; }
+    .credits.idiomas       { background: #C7C2BB; color: black; }
+    .credits.otros         { background: #B7B2A9; color: black; }
+  </style>
 </head>
 <body>
-  <div class="header">
-    <div id="cursadas">Materias cursadas: 0</div>
-    <h1>Malla Curricular Biónica (UPIITA-IPN)</h1>
-    <div id="promedio">Promedio: --</div>
-    <div id="creditos">Créditos: 0</div>
-  </div>
-  <div id="malla" class="años-container"></div>
-
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <h3>Temario</h3>
-      <div id="temarioContent"></div>
-      <button onclick="closeModal()">Cerrar</button>
+  <div class="container">
+    <div class="column" id="columna1"></div>
+    <div class="column" id="columna2"></div>
+    <div class="resumen">
+      <h2>Resumen</h2>
+      <p id="promedio"></p>
+      <p id="materiasCursadas"></p>
+      <p id="creditos"></p>
     </div>
   </div>
-
-<script>
-  // Datos materias (simplificado para ejemplo, completa con todas tus materias)
-  const materias = [
-{ id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas de los números reales y complejos, funciones y límites.','Cálculo Diferencial y sus aplicaciones.','Cálculo Integral y sus aplicaciones.','Sucesiones y Series.'], semestre:1, deps:[], categoria:'matematicas' }, 
+  <script>
+    const materias = [
+   { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas de los números reales y complejos, funciones y límites.','Cálculo Diferencial y sus aplicaciones.','Cálculo Integral y sus aplicaciones.','Sucesiones y Series.'], semestre:1, deps:[], categoria:'matematicas' }, 
 { id:'algebra', nombre:'Álgebra Lineal', creditos:7.5, temario:['Sistemas de ecuaciones lineales','Espacios vectoriales','Transformaciones lineales','Valores propios y vectores propios','Espacios con prducto interior'], semestre:1, deps:[], categoria:'matematicas' }, 
 { id:'biocel', nombre:'Biología Celular', creditos:7.5, temario:['Fundamentos físicos y químicos.','Estructura celular.','Almacenamiento y expresión de la información genética.','Función celular.','Bases de fisiología y anatomía.'], semestre:1, deps:[], categoria:'biologicas' }, 
 { id:'quimica', nombre:'Química Orgánica', creditos:7.5, temario:['Introducción a la Química Orgánica.','Hidrocarburos.','Derivados de los hidrocarburos.','Carbohidratos.','Aminoácidos y proteínas'], semestre:1, deps:[], categoria:'biologicas' },
@@ -306,154 +170,96 @@
      ];
 
 
-  // Guardar y cargar datos
-  const materiasAprobadas = JSON.parse(localStorage.getItem('materiasAprobadas') || '{}');
-  const calificaciones = JSON.parse(localStorage.getItem('calificaciones') || '{}');
+    let materiasAprobadas = JSON.parse(localStorage.getItem('materiasAprobadas')) || {};
 
-  function guardarDatos() {
-    localStorage.setItem('materiasAprobadas', JSON.stringify(materiasAprobadas));
-    localStorage.setItem('calificaciones', JSON.stringify(calificaciones));
-  }
+    function renderMalla() {
+      document.getElementById('columna1').innerHTML = '';
+      document.getElementById('columna2').innerHTML = '';
+      let totalCreditos = 0;
+      let sumaCalificaciones = 0;
+      let totalCursadas = 0;
 
-  function renderMalla() {
-    const contenedor = document.getElementById('malla');
-    contenedor.innerHTML = '';
+      for (let i = 1; i <= 10; i++) {
+        const col = i <= 5 ? 'columna1' : 'columna2';
+        const semestreBox = document.createElement('div');
+        semestreBox.className = 'semestre';
+        semestreBox.innerHTML = `<h3>Semestre ${i}</h3>`;
 
-    const fila1 = document.createElement('div');
-    fila1.className = 'fila';
+        materias.filter(m => m.semestre === i).forEach(m => {
+          const subj = document.createElement('div');
+          subj.className = `subject ${m.categoria}`;
+          const desbloqueada = m.deps.every(d => materiasAprobadas[d] !== undefined);
 
-    const fila2 = document.createElement('div');
-    fila2.className = 'fila';
+          if (!desbloqueada) subj.classList.add('locked');
 
-    materias.forEach(m => {
-      // No hacemos por semestre para ejemplo, pero se puede adaptar
-    });
+          const nombre = document.createElement('span');
+          nombre.textContent = m.nombre;
 
-    for(let s=1; s<=10; s++){
-      const semestreMaterias = materias.filter(m => m.semestre === s);
-      if(semestreMaterias.length === 0) continue;
+          const creditos = document.createElement('span');
+          creditos.className = `credits ${m.categoria}`;
+          creditos.textContent = `${m.creditos} créditos`;
 
-      const card = document.createElement('div');
-      card.className = 'semestre-card';
+          const calIcon = document.createElement('span');
+          calIcon.className = 'calificacion-icon';
+          calIcon.title = materiasAprobadas[m.id]
+            ? `Calificación: ${materiasAprobadas[m.id]} (clic para cambiar o quitar)`
+            : 'Ingresar calificación';
+          calIcon.textContent = materiasAprobadas[m.id]
+            ? `⭐ ${materiasAprobadas[m.id]}`
+            : '☆';
 
-      const titulo = document.createElement('div');
-      titulo.className = 'semestre-title';
-      titulo.textContent = `Semestre ${s}`;
-      card.appendChild(titulo);
+          calIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleAprobada(m.id);
+          });
 
-      semestreMaterias.forEach(m => {
-        const depsFaltan = m.deps.filter(d => !materiasAprobadas[d]);
-        const aprobada = materiasAprobadas[m.id];
+          subj.appendChild(nombre);
+          subj.appendChild(creditos);
+          subj.appendChild(calIcon);
 
-        const subj = document.createElement('div');
-        subj.className = 'subject ' + m.categoria;
-        if(depsFaltan.length) subj.classList.add('locked');
+          semestreBox.appendChild(subj);
 
-        subj.onclick = () => toggleAprobada(m.id);
-
-        const creditosDiv = document.createElement('div');
-        creditosDiv.className = 'credits';
-        creditosDiv.textContent = m.creditos;
-
-        const infoDiv = document.createElement('div');
-        infoDiv.className = 'info';
-        infoDiv.textContent = m.nombre;
-        if(aprobada) infoDiv.classList.add('aprobada');
-
-        const calIcon = document.createElement('span');
-        calIcon.className = 'calificacion-icon';
-        calIcon.title = aprobada
-          ? `Calificación: ${materiasAprobadas[m.id]} (clic para cambiar o quitar)`
-          : 'Ingresar calificación';
-        calIcon.textContent = aprobada
-          ? `⭐ ${materiasAprobadas[m.id]}`
-          : '☆';
-        calIcon.addEventListener('click', (e) => {
-          e.stopPropagation();
-          toggleAprobada(m.id);
+          if (materiasAprobadas[m.id] !== undefined) {
+            totalCreditos += m.creditos;
+            sumaCalificaciones += parseFloat(materiasAprobadas[m.id]);
+            totalCursadas++;
+          }
         });
+        document.getElementById(col).appendChild(semestreBox);
+      }
 
-        const temarioSpan = document.createElement('span');
-        temarioSpan.className = 'temario';
-        temarioSpan.textContent = '📄';
-        temarioSpan.onclick = (e) => {
-          e.stopPropagation();
-          showTemario(m.temario);
-        };
-
-        subj.appendChild(creditosDiv);
-        subj.appendChild(infoDiv);
-        subj.appendChild(calIcon);
-        subj.appendChild(temarioSpan);
-        card.appendChild(subj);
-      });
-
-      (s <= 5 ? fila1 : fila2).appendChild(card);
+      const promedio = totalCursadas ? (sumaCalificaciones / totalCursadas).toFixed(2) : 'N/A';
+      document.getElementById('promedio').textContent = `Promedio: ${promedio}`;
+      document.getElementById('materiasCursadas').textContent = `Materias cursadas: ${totalCursadas}`;
+      document.getElementById('creditos').textContent = `Créditos obtenidos: ${totalCreditos}`;
     }
-    contenedor.appendChild(fila1);
-    contenedor.appendChild(fila2);
 
-    actualizarDatos();
-  }
-
-  function toggleAprobada(id) {
-    if (materiasAprobadas[id]) {
-      delete materiasAprobadas[id];
-      delete calificaciones[id];
-      quitarDependientes(id);
-    } else {
-      const cal = prompt('Ingresa la calificación (0 a 10)');
-      const val = parseFloat(cal);
-      if (!isNaN(val) && val >= 0 && val <= 10) {
-        materiasAprobadas[id] = val;
+    function toggleAprobada(id) {
+      const cal = prompt("Ingresa la calificación de la materia (0-10):");
+      const num = parseFloat(cal);
+      if (!isNaN(num) && num >= 0 && num <= 10) {
+        materiasAprobadas[id] = num.toFixed(1);
+      } else if (materiasAprobadas[id]) {
+        delete materiasAprobadas[id];
+        quitarDependientes(id);
       } else {
-        alert('Calificación inválida');
         return;
       }
+      localStorage.setItem('materiasAprobadas', JSON.stringify(materiasAprobadas));
+      renderMalla();
     }
-    guardarDatos();
+
+    function quitarDependientes(id) {
+      const dependientes = materias.filter(m => m.deps.includes(id));
+      dependientes.forEach(dep => {
+        if (materiasAprobadas[dep.id]) {
+          delete materiasAprobadas[dep.id];
+          quitarDependientes(dep.id);
+        }
+      });
+    }
+
     renderMalla();
-  }
-
-  function quitarDependientes(id) {
-    const dependientes = materias.filter(m => m.deps.includes(id));
-    dependientes.forEach(dep => {
-      if(materiasAprobadas[dep.id]){
-        delete materiasAprobadas[dep.id];
-        delete calificaciones[dep.id];
-        quitarDependientes(dep.id);
-      }
-    });
-  }
-
-  function actualizarDatos() {
-    const aprobadasIds = Object.keys(materiasAprobadas);
-    const sumaCreditos = aprobadasIds.reduce((acc, id) => {
-      const m = materias.find(x => x.id === id);
-      return m ? acc + m.creditos : acc;
-    }, 0);
-    const califs = Object.values(materiasAprobadas);
-    const promedio = califs.length
-      ? (califs.reduce((a, b) => a + b, 0) / califs.length).toFixed(2)
-      : '--';
-    document.getElementById('promedio').textContent = `Promedio: ${promedio}`;
-    document.getElementById('creditos').textContent = `Créditos: ${sumaCreditos}`;
-    document.getElementById('cursadas').textContent = `Materias cursadas: ${aprobadasIds.length}`;
-  }
-
-  function showTemario(temario) {
-    const c = document.getElementById('temarioContent');
-    c.innerHTML = temario && temario.length
-      ? '<ul>' + temario.map(e => '<li>' + e + '</li>').join('') + '</ul>'
-      : 'No existe';
-    document.getElementById('modal').style.display = 'flex';
-  }
-
-  function closeModal() {
-    document.getElementById('modal').style.display = 'none';
-  }
-
-  renderMalla();
-</script>
+  </script>
 </body>
 </html>
