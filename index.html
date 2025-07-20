@@ -35,6 +35,9 @@
 
     #malla {
       flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .resumen-box {
@@ -47,22 +50,8 @@
       line-height: 1.6;
     }
 
-    .años-container {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      align-items: center;
-    }
-
-    .fila {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-    }
-
     .semestre-card {
-      background: #dcdcdc;
+      background: #f0e9e0;
       border-radius: 8px;
       padding: 6px;
       width: 220px;
@@ -73,7 +62,7 @@
       font-weight: bold;
       font-size: 14px;
       text-align: center;
-      background-color: #bfbfbf;
+      background-color: #e8d6c3;
       padding: 5px;
       border-radius: 8px 8px 0 0;
       color: #4b2e2e;
@@ -89,7 +78,7 @@
       font-size: 11px;
       cursor: pointer;
       transition: background 0.3s;
-      background: #f9f5f0; /* Café muy claro */
+      background: #f9f5f0;
     }
 
     .subject.locked {
@@ -132,14 +121,14 @@
       flex-shrink: 0;
     }
 
-    .matematicas    { background: #7593af; }
-    .fisicas       { background: #9798AE; }
-    .biologicas    { background: #AEB4AC; }
-    .programacion  { background: #B56B6B; }
-    .electronica   { background: #A14D4D; }
-    .sociales      { background: #A3909F; }
-    .idiomas       { background: #C7C2BB; }
-    .otros         { background: #B7B2A9; }
+    .matematicas    { background: #e7edf3; }
+    .fisicas        { background: #e6e6f0; }
+    .biologicas     { background: #f0f2ec; }
+    .programacion   { background: #f2e4e4; }
+    .electronica    { background: #f2e0e0; }
+    .sociales       { background: #f1e9f0; }
+    .idiomas        { background: #f4f3f1; }
+    .otros          { background: #f2f1ef; }
 
     .modal {
       display: none;
@@ -177,7 +166,7 @@
   </div>
 
   <div class="main-container">
-    <div id="malla" class="años-container"></div>
+    <div id="malla"></div>
 
     <div id="resumen" class="resumen-box">
       <div><strong>Materias cursadas:</strong> <span id="cont-materias">--</span></div>
