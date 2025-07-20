@@ -267,129 +267,129 @@
 { id:'trabajoii', nombre:'Trabajo Terminal II', creditos:7.5, temario:['Lineamientos generales de la dinámica de trabajo.','Administración del proyecto.','Documentación del proyecto.','Preparación de la defensa oral.','Análisis y discusión de resultados.'], semestre:10, deps:['trabajoi'], categoria:'otros' }
      ];
 
+const aprobadas = JSON.parse(localStorage.getItem('aprobadas') || '[]');
+const calificaciones = JSON.parse(localStorage.getItem('calificaciones') || '{}');
 
-    const aprobadas = JSON.parse(localStorage.getItem('aprobadas') || '[]');
-    const calificaciones = JSON.parse(localStorage.getItem('calificaciones') || '{}');
+function render() {
+  const contenedor = document.getElementById('malla');
+  contenedor.innerHTML = '';
 
-    function render() {
-      const contenedor = document.getElementById('malla');
-      contenedor.innerHTML = '';
+  const fila1 = document.createElement('div');
+  fila1.className = 'fila';
 
-      const fila1 = document.createElement('div');
-      fila1.className = 'fila';
+  const fila2 = document.createElement('div');
+  fila2.className = 'fila';
 
-      const fila2 = document.createElement('div');
-      fila2.className = 'fila';
+  for (let s = 1; s <= 10; s++) {
+    const semestreMaterias = materias.filter(m => m.semestre === s);
+    if (semestreMaterias.length === 0) continue;
 
-      for (let s = 1; s <= 10; s++) {
-        const semestreMaterias = materias.filter(m => m.semestre === s);
-        if (semestreMaterias.length === 0) continue;
+    const card = document.createElement('div');
+    card.className = 'semestre-card';
 
-        const card = document.createElement('div');
-        card.className = 'semestre-card';
+    const titulo = document.createElement('div');
+    titulo.className = 'semestre-title';
+    titulo.textContent = `Semestre ${s}`;
+    card.appendChild(titulo);
 
-        const titulo = document.createElement('div');
-        titulo.className = 'semestre-title';
-        titulo.textContent = `Semestre ${s}`;
-        card.appendChild(titulo);
+    semestreMaterias.forEach(m => {
+      const depsFaltan = m.deps.filter(d => !aprobadas.includes(d));
+      const esAprobada = aprobadas.includes(m.id);
 
-        semestreMaterias.forEach(m => {
-          const depsFaltan = m.deps.filter(d => !aprobadas.includes(d));
-          const esAprobada = aprobadas.includes(m.id);
+      const materiaDiv = document.createElement('div');
+      materiaDiv.className = `subject ${m.categoria}`;
+      if (depsFaltan.length) materiaDiv.classList.add('locked');
+      materiaDiv.onclick = () => toggleAprob(m.id);
 
-          const materiaDiv = document.createElement('div');
-          materiaDiv.className = `subject ${m.categoria}`;
-          if (depsFaltan.length) materiaDiv.classList.add('locked');
-          materiaDiv.onclick = () => toggleAprob(m.id);
+      const creditos = document.createElement('div');
+      creditos.className = 'credits';
+      creditos.textContent = m.creditos;
 
-          const creditos = document.createElement('div');
-          creditos.className = 'credits';
-          creditos.textContent = m.creditos;
+      const nombre = document.createElement('div');
+      nombre.className = 'info';
+      nombre.textContent = m.nombre + (calificaciones[m.id] !== undefined ? ` (${calificaciones[m.id]})` : '');
+      if (esAprobada) nombre.classList.add('aprobada');
 
-          const nombre = document.createElement('div');
-          nombre.className = 'info';
-          nombre.textContent = m.nombre + (calificaciones[m.id] !== undefined ? ` (${calificaciones[m.id]})` : '');
-          if (esAprobada) nombre.classList.add('aprobada');
+      const iconCal = document.createElement('span');
+      iconCal.className = 'calificacion-icon';
+      iconCal.textContent = '📝';
+      iconCal.onclick = e => {
+        e.stopPropagation();
+        if (!materiaDiv.classList.contains('locked')) ingresarCalificacion(m.id);
+      };
 
-          const iconCal = document.createElement('span');
-          iconCal.className = 'calificacion-icon';
-          iconCal.textContent = '📝';
-          iconCal.onclick = e => {
-            e.stopPropagation();
-            if (!materiaDiv.classList.contains('locked')) ingresarCalificacion(m.id);
-          };
+      const iconTemario = document.createElement('span');
+      iconTemario.className = 'temario';
+      iconTemario.textContent = '📄';
+      iconTemario.onclick = e => {
+        e.stopPropagation();
+        showTemario(m.temario);
+      };
 
-          const iconTemario = document.createElement('span');
-          iconTemario.className = 'temario';
-          iconTemario.textContent = '📄';
-          iconTemario.onclick = e => {
-            e.stopPropagation();
-            showTemario(m.temario);
-          };
+      materiaDiv.appendChild(creditos);
+      materiaDiv.appendChild(nombre);
+      materiaDiv.appendChild(iconCal);
+      materiaDiv.appendChild(iconTemario);
+      card.appendChild(materiaDiv);
+    });
 
-          materiaDiv.appendChild(creditos);
-          materiaDiv.appendChild(nombre);
-          materiaDiv.appendChild(iconCal);
-          materiaDiv.appendChild(iconTemario);
-          card.appendChild(materiaDiv);
-        });
+    (s <= 5 ? fila1 : fila2).appendChild(card);
+  }
 
-        (s <= 5 ? fila1 : fila2).appendChild(card);
-      }
+  contenedor.appendChild(fila1);
+  contenedor.appendChild(fila2);
+  actualizarResumen();
+}
 
-      contenedor.appendChild(fila1);
-      contenedor.appendChild(fila2);
-      actualizarResumen();
-    }
+function toggleAprob(id) {
+  const idx = aprobadas.indexOf(id);
+  if (idx >= 0) {
+    aprobadas.splice(idx, 1);
+    delete calificaciones[id];
+  } else {
+    aprobadas.push(id);
+  }
+  localStorage.setItem('aprobadas', JSON.stringify(aprobadas));
+  localStorage.setItem('calificaciones', JSON.stringify(calificaciones));
+  render();
+}
 
-    function toggleAprob(id) {
-      const idx = aprobadas.indexOf(id);
-      if (idx >= 0) {
-        aprobadas.splice(idx, 1);
-        delete calificaciones[id];
-      } else {
-        aprobadas.push(id);
-      }
-      localStorage.setItem('aprobadas', JSON.stringify(aprobadas));
-      localStorage.setItem('calificaciones', JSON.stringify(calificaciones));
-      render();
-    }
-
-    function ingresarCalificacion(id) {
-      const nota = prompt("Ingresa la calificación (0 a 10):");
-      const valor = parseFloat(nota);
-      if (!isNaN(valor) && valor >= 0 && valor <= 10) {
-        calificaciones[id] = valor;
-        localStorage.setItem('calificaciones', JSON.stringify(calificaciones));
-        render();
-      }
-    }
-
-    function actualizarResumen() {
-      const values = Object.values(calificaciones).map(n => parseFloat(n));
-      const promedio = values.length ? (values.reduce((a, b) => a + b, 0) / values.length).toFixed(2) : '--';
-      const materiasAprobadas = aprobadas.length;
-      const creditosTotales = materias
-        .filter(m => aprobadas.includes(m.id))
-        .reduce((acc, m) => acc + m.creditos, 0);
-
-      document.getElementById('promedio').textContent = promedio;
-      document.getElementById('cont-materias').textContent = materiasAprobadas;
-      document.getElementById('cont-creditos').textContent = creditosTotales.toFixed(1);
-    }
-
-    function showTemario(temario) {
-      const c = document.getElementById('temarioContent');
-      c.innerHTML = temario.length ? '<ul>' + temario.map(e => '<li>' + e + '</li>').join('') + '</ul>' : 'No existe';
-      document.getElementById('modal').style.display = 'flex';
-    }
-
-    function closeModal() {
-      document.getElementById('modal').style.display = 'none';
-    }
-
+function ingresarCalificacion(id) {
+  const nota = prompt("Ingresa la calificación (0 a 10):");
+  const valor = parseFloat(nota);
+  if (!isNaN(valor) && valor >= 0 && valor <= 10) {
+    calificaciones[id] = valor;
+    localStorage.setItem('calificaciones', JSON.stringify(calificaciones));
     render();
-  </script>
+  }
+}
+
+function actualizarResumen() {
+  const values = Object.values(calificaciones).map(n => parseFloat(n));
+  const promedio = values.length ? (values.reduce((a, b) => a + b, 0) / values.length).toFixed(2) : '--';
+  const materiasAprobadas = aprobadas.length;
+  const creditosTotales = materias
+    .filter(m => aprobadas.includes(m.id))
+    .reduce((acc, m) => acc + m.creditos, 0);
+
+  document.getElementById('promedio').textContent = promedio;
+  document.getElementById('cont-materias').textContent = materiasAprobadas;
+  document.getElementById('cont-creditos').textContent = creditosTotales.toFixed(1);
+}
+
+function showTemario(temario) {
+  const c = document.getElementById('temarioContent');
+  c.innerHTML = temario.length ? '<ul>' + temario.map(e => '<li>' + e + '</li>').join('') + '</ul>' : 'No existe';
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+render();
+</script>
+
 </body>
 </html>
 
