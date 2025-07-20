@@ -25,21 +25,36 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 30px;
     margin-bottom: 16px;
+    flex-wrap: wrap;
   }
 
   #promedio-box {
     background-color: #cbb48c;
     border-radius: 12px;
-    padding: 12px 24px;
+    padding: 14px 28px;
     font-weight: 700;
-    font-size: 20px;
+    font-size: 18px;
     color: #4a3c2f;
     font-family: monospace;
     box-shadow: 0 4px 10px rgba(112, 78, 33, 0.35);
     user-select: none;
-    min-width: 130px;
+    min-width: 180px;
+    text-align: center;
+  }
+
+  #cursadas-box {
+    background-color: #d9caa8;
+    border-radius: 12px;
+    padding: 14px 28px;
+    font-weight: 600;
+    font-size: 16px;
+    color: #4a3c2f;
+    font-family: monospace;
+    box-shadow: 0 4px 10px rgba(112, 78, 33, 0.22);
+    user-select: none;
+    min-width: 160px;
     text-align: center;
   }
 
@@ -54,6 +69,7 @@
     display: flex;
     gap: 16px;
     justify-content: center;
+    flex-wrap: nowrap;
   }
 
   .semestre-card {
@@ -108,16 +124,31 @@
     height: 28px;
     font-size: 12px;
     border-radius: 50%;
-    background: #dbc493;
-    border: 1.8px solid #aa8653;
+    border: 1.8px solid transparent;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
     flex-shrink: 0;
     margin-right: 8px;
-    color: #6b5132;
+    color: white;
     user-select: none;
+  }
+
+  /* Colores categoría para créditos y fondo materia */
+  .matematicas    { background: #7593af; color: white; }
+  .fisicas       { background: #9798AE; color: white; }
+  .biologicas    { background: #AEB4AC; color: black; }
+  .programacion  { background: #B56B6B; color: white; }
+  .electronica   { background: #A14D4D; color: white; }
+  .sociales      { background: #A3909F; color: white; }
+  .idiomas       { background: #C7C2BB; color: black; }
+  .otros         { background: #B7B2A9; color: black; }
+
+  .subject.locked .credits {
+    background: #ccc !important;
+    color: #777 !important;
+    border-color: #bbb !important;
   }
 
   .temario, .calificacion-icon {
@@ -126,23 +157,13 @@
     font-size: 18px;
     flex-shrink: 0;
     user-select: none;
-    color: #92764e;
+    color: #4f4332;
     transition: color 0.25s ease;
   }
 
   .temario:hover, .calificacion-icon:hover {
-    color: #b79854;
+    color: #786a43;
   }
-
-  /* Categorías con colores del primer código */
-  .matematicas    { background-color: #dbc493; color: #6b5132; }
-  .fisicas       { background-color: #ccb27b; color: #5a4625; }
-  .biologicas    { background-color: #d4c09c; color: #63572a; }
-  .programacion  { background-color: #bc8c6b; color: #5a3f30; }
-  .electronica   { background-color: #b07b5e; color: #543b2d; }
-  .sociales      { background-color: #b59c89; color: #564b41; }
-  .idiomas      { background-color: #c1b3a3; color: #6a5f51; }
-  .otros        { background-color: #a8927f; color: #4a4138; }
 
   /* Modal */
   .modal {
@@ -198,6 +219,7 @@
 <h1>Malla Curricular Biónica (UPIITA-IPN)</h1>
 <div id="header-container">
   <div id="promedio-box">Promedio: --</div>
+  <div id="cursadas-box">Cursadas: 0 materias<br/>Créditos: 0</div>
 </div>
 
 <div id="malla"></div>
@@ -211,10 +233,9 @@
 </div>
 
 <script>
-  // Cambia este arreglo por tu lista real completa
+  // Ejemplo de materias; reemplaza con tu lista real
   const materias = [
-
-{ id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas de los números reales y complejos, funciones y límites.','Cálculo Diferencial y sus aplicaciones.','Cálculo Integral y sus aplicaciones.','Sucesiones y Series.'], semestre:1, deps:[], categoria:'matematicas' }, 
+    { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas de los números reales y complejos, funciones y límites.','Cálculo Diferencial y sus aplicaciones.','Cálculo Integral y sus aplicaciones.','Sucesiones y Series.'], semestre:1, deps:[], categoria:'matematicas' }, 
 { id:'algebra', nombre:'Álgebra Lineal', creditos:7.5, temario:['Sistemas de ecuaciones lineales','Espacios vectoriales','Transformaciones lineales','Valores propios y vectores propios','Espacios con prducto interior'], semestre:1, deps:[], categoria:'matematicas' }, 
 { id:'biocel', nombre:'Biología Celular', creditos:7.5, temario:['Fundamentos físicos y químicos.','Estructura celular.','Almacenamiento y expresión de la información genética.','Función celular.','Bases de fisiología y anatomía.'], semestre:1, deps:[], categoria:'biologicas' }, 
 { id:'quimica', nombre:'Química Orgánica', creditos:7.5, temario:['Introducción a la Química Orgánica.','Hidrocarburos.','Derivados de los hidrocarburos.','Carbohidratos.','Aminoácidos y proteínas'], semestre:1, deps:[], categoria:'biologicas' },
@@ -321,7 +342,7 @@
         materiaDiv.onclick = () => toggleAprob(m.id);
 
         const creditos = document.createElement('div');
-        creditos.className = 'credits';
+        creditos.className = 'credits ' + m.categoria;
         creditos.textContent = m.creditos;
 
         const nombre = document.createElement('div');
@@ -358,7 +379,7 @@
     contenedor.appendChild(fila1);
     contenedor.appendChild(fila2);
 
-    actualizarPromedio();
+    actualizarResumen();
   }
 
   function toggleAprob(id) {
@@ -386,20 +407,27 @@
     }
   }
 
-  function actualizarPromedio() {
-    // Calculo promedio ponderado según créditos y calificación
+  function actualizarResumen() {
     let sumaCalifPorCred = 0;
     let sumaCred = 0;
-    for (const id in calificaciones) {
-      const cal = calificaciones[id];
+    let materiasCursadas = 0;
+    let creditosCursados = 0;
+
+    aprobadas.forEach(id => {
       const mat = materias.find(m => m.id === id);
-      if (mat && !isNaN(cal)) {
-        sumaCalifPorCred += cal * mat.creditos;
-        sumaCred += mat.creditos;
+      if (mat) {
+        materiasCursadas++;
+        creditosCursados += mat.creditos;
+        if (calificaciones[id] !== undefined && !isNaN(calificaciones[id])) {
+          sumaCalifPorCred += calificaciones[id] * mat.creditos;
+          sumaCred += mat.creditos;
+        }
       }
-    }
+    });
+
     const promedio = sumaCred > 0 ? (sumaCalifPorCred / sumaCred).toFixed(2) : '--';
     document.getElementById('promedio-box').textContent = `Promedio: ${promedio}`;
+    document.getElementById('cursadas-box').innerHTML = `Cursadas: ${materiasCursadas} materias<br/>Créditos: ${creditosCursados}`;
   }
 
   function showTemario(temario) {
