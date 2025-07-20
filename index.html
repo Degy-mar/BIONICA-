@@ -96,7 +96,7 @@
 
     .credits {
       font-size: 11px;
-      background: #ccc;
+      color: white;
       padding: 1px 5px;
       border-radius: 4px;
       position: absolute;
@@ -156,8 +156,15 @@
   </div>
 
   <script>
-    const materiasEjemplo = [
-     { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas de los números reales y complejos, funciones y límites.','Cálculo Diferencial y sus aplicaciones.','Cálculo Integral y sus aplicaciones.','Sucesiones y Series.'], semestre:1, deps:[], categoria:'matematicas' }, 
+    const coloresCategoria = {
+      general: '#666',
+      matematicas: '#0275d8',
+      ciencias: '#5cb85c',
+      ingenieria: '#f0ad4e',
+      programacion: '#d9534f'
+    };
+
+    const materiasEjemplo = { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas de los números reales y complejos, funciones y límites.','Cálculo Diferencial y sus aplicaciones.','Cálculo Integral y sus aplicaciones.','Sucesiones y Series.'], semestre:1, deps:[], categoria:'matematicas' }, 
 { id:'algebra', nombre:'Álgebra Lineal', creditos:7.5, temario:['Sistemas de ecuaciones lineales','Espacios vectoriales','Transformaciones lineales','Valores propios y vectores propios','Espacios con prducto interior'], semestre:1, deps:[], categoria:'matematicas' }, 
 { id:'biocel', nombre:'Biología Celular', creditos:7.5, temario:['Fundamentos físicos y químicos.','Estructura celular.','Almacenamiento y expresión de la información genética.','Función celular.','Bases de fisiología y anatomía.'], semestre:1, deps:[], categoria:'biologicas' }, 
 { id:'quimica', nombre:'Química Orgánica', creditos:7.5, temario:['Introducción a la Química Orgánica.','Hidrocarburos.','Derivados de los hidrocarburos.','Carbohidratos.','Aminoácidos y proteínas'], semestre:1, deps:[], categoria:'biologicas' },
@@ -248,6 +255,19 @@
       document.getElementById("totalMaterias").innerText = materias.length;
     };
 
+    const desbloquearMaterias = () => {
+      document.querySelectorAll('.subject').forEach(div => {
+        const id = div.dataset.id;
+        const mat = materiasEjemplo.find(m => m.id === id);
+        const depsAprobadas = mat.deps.every(depId => {
+          const dep = document.querySelector(`.subject[data-id='${depId}']`);
+          return dep && parseFloat(dep.dataset.calificacion) >= 6;
+        });
+        if (!depsAprobadas) div.classList.add('locked');
+        else div.classList.remove('locked');
+      });
+    };
+
     const agregarEventosDeCalificacion = () => {
       document.querySelectorAll('.calificacion-icon').forEach(icon => {
         icon.onclick = () => {
@@ -258,6 +278,7 @@
           if (!isNaN(cal) && cal >= 0 && cal <= 10) {
             materia.dataset.calificacion = cal;
             calcularResumen();
+            desbloquearMaterias();
           } else {
             alert("Calificación inválida.");
           }
@@ -286,7 +307,7 @@
       div.className = "subject";
       div.dataset.id = materia.id;
       div.innerHTML = `
-        <div class="credits">${materia.creditos}</div>
+        <div class="credits" style="background:${coloresCategoria[materia.categoria] || '#999'}">${materia.creditos}</div>
         <div class="info">${materia.nombre}</div>
         <div class="calificacion-icon">📝</div>
         <div class="temario">📄</div>
@@ -307,11 +328,15 @@
     };
 
     const iniciar = () => {
-      renderizarSemestre("Semestre 1", materiasEjemplo, document.getElementById("columna1"));
-      renderizarSemestre("Semestre 2", materiasEjemplo, document.getElementById("columna2"));
+      for (let i = 1; i <= 10; i++) {
+        const materiasSemestre = materiasEjemplo.filter(m => m.semestre === i);
+        const contenedor = i <= 5 ? document.getElementById("columna1") : document.getElementById("columna2");
+        renderizarSemestre(`Semestre ${i}`, materiasSemestre, contenedor);
+      }
       agregarEventosDeCalificacion();
       agregarEventosDeTemario();
       calcularResumen();
+      desbloquearMaterias();
     };
 
     window.onload = iniciar;
