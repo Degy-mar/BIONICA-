@@ -98,7 +98,7 @@
   </div>
   <script>
     const materias = [
-  { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas de los números reales y complejos, funciones y límites.','Cálculo Diferencial y sus aplicaciones.','Cálculo Integral y sus aplicaciones.','Sucesiones y Series.'], semestre:1, deps:[], categoria:'matematicas' }, 
+   { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas de los números reales y complejos, funciones y límites.','Cálculo Diferencial y sus aplicaciones.','Cálculo Integral y sus aplicaciones.','Sucesiones y Series.'], semestre:1, deps:[], categoria:'matematicas' }, 
 { id:'algebra', nombre:'Álgebra Lineal', creditos:7.5, temario:['Sistemas de ecuaciones lineales','Espacios vectoriales','Transformaciones lineales','Valores propios y vectores propios','Espacios con prducto interior'], semestre:1, deps:[], categoria:'matematicas' }, 
 { id:'biocel', nombre:'Biología Celular', creditos:7.5, temario:['Fundamentos físicos y químicos.','Estructura celular.','Almacenamiento y expresión de la información genética.','Función celular.','Bases de fisiología y anatomía.'], semestre:1, deps:[], categoria:'biologicas' }, 
 { id:'quimica', nombre:'Química Orgánica', creditos:7.5, temario:['Introducción a la Química Orgánica.','Hidrocarburos.','Derivados de los hidrocarburos.','Carbohidratos.','Aminoácidos y proteínas'], semestre:1, deps:[], categoria:'biologicas' },
@@ -195,6 +195,69 @@
           quitarDependientes(dep.id);
         }
       });
+    }
+
+    function renderMalla() {
+      const col1 = document.getElementById('columna1');
+      const col2 = document.getElementById('columna2');
+      col1.innerHTML = '';
+      col2.innerHTML = '';
+
+      const resumen = {
+        totalCal: 0,
+        totalCred: 0,
+        materiasCursadas: 0
+      };
+
+      for (let s = 1; s <= 10; s++) {
+        const semDiv = document.createElement('div');
+        semDiv.className = 'semestre';
+        semDiv.innerHTML = `<h3>Semestre ${s}</h3>`;
+
+        materias
+          .filter(m => m.semestre === s)
+          .forEach(m => {
+            const bloqueada = m.deps.some(dep => !materiasAprobadas[dep]);
+            const aprobada = materiasAprobadas[m.id] !== undefined;
+
+            const subj = document.createElement('div');
+            subj.className = `subject ${m.categoria}`;
+            if (bloqueada) subj.classList.add('locked');
+
+            subj.onclick = () => {
+              if (!bloqueada || aprobada) toggleAprobada(m.id);
+            };
+
+            const nombre = document.createElement('span');
+            nombre.textContent = m.nombre;
+
+            const creditos = document.createElement('span');
+            creditos.className = `credits ${m.categoria}`;
+            creditos.textContent = `${m.creditos} créditos`;
+
+            if (aprobada) {
+              resumen.totalCred += m.creditos;
+              resumen.totalCal += parseFloat(materiasAprobadas[m.id]) * m.creditos;
+              resumen.materiasCursadas += 1;
+
+              const icono = document.createElement('span');
+              icono.className = 'calificacion-icon';
+              icono.textContent = `⭐ ${materiasAprobadas[m.id]}`;
+              nombre.appendChild(icono);
+            }
+
+            subj.appendChild(nombre);
+            subj.appendChild(creditos);
+            semDiv.appendChild(subj);
+          });
+
+        (s <= 5 ? col1 : col2).appendChild(semDiv);
+      }
+
+      const promedio = resumen.totalCred ? (resumen.totalCal / resumen.totalCred).toFixed(2) : '—';
+      document.getElementById('promedio').textContent = `Promedio: ${promedio}`;
+      document.getElementById('materiasCursadas').textContent = `Materias cursadas: ${resumen.materiasCursadas}`;
+      document.getElementById('creditos').textContent = `Créditos cursados: ${resumen.totalCred}`;
     }
 
     renderMalla();
