@@ -289,129 +289,144 @@ const materias = [
      ];
 
 
-  const mallaEl = document.getElementById('malla');
-  const modal = document.getElementById('modal');
-  const temarioContent = document.getElementById('temarioContent');
-  const contMaterias = document.getElementById('cont-materias');
-  const contCreditos = document.getElementById('cont-creditos');
-  const promedioEl = document.getElementById('promedio');
+let aprobadas = [];
+let calificaciones = {};
 
-  // Estado materias aprobadas (ejemplo: puedes guardar en localStorage)
-  const aprobadas = new Set();
+function render() {
+  const cont = document.getElementById('malla');
+  cont.innerHTML = '';
 
-  // Función para crear elementos y clases
-  function crearElemento(tag, clase, texto) {
-    const el = document.createElement(tag);
-    if (clase) el.className = clase;
-    if (texto) el.textContent = texto;
-    return el;
-  }
+  // Obtener semestres únicos y ordenarlos
+  const semestres = [...new Set(materias.map(m => m.semestre))].sort((a,b)=>a-b);
 
-  // Mostrar temario en modal
-  function showTemario(materia) {
-    temarioContent.innerHTML = '';
-    if(materia.temario && materia.temario.length) {
-      const ul = document.createElement('ul');
-      materia.temario.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        ul.appendChild(li);
-      });
-      temarioContent.appendChild(ul);
-    } else {
-      temarioContent.textContent = 'No hay temario disponible.';
-    }
-    modal.style.display = 'flex';
-  }
+  semestres.forEach(sem => {
+    // Crear contenedor del semestre
+    const card = document.createElement('div');
+    card.className = 'semestre-card';
 
-  function closeModal() {
-    modal.style.display = 'none';
-  }
-  window.closeModal = closeModal;
+    const titulo = document.createElement('div');
+    titulo.className = 'semestre-title';
+    titulo.textContent = `Semestre ${sem}`;
+    card.appendChild(titulo);
 
-  // Actualizar resumen
-  function actualizarResumen() {
-    let totalMat = aprobadas.size;
-    let totalCred = 0;
-    aprobadas.forEach(id => {
-      const m = materias.find(x => x.id === id);
-      if(m) totalCred += m.creditos;
+    // Contenedor horizontal para materias
+    const fila = document.createElement('div');
+    fila.style.display = 'flex';
+    fila.style.gap = '6px';
+    fila.style.flexWrap = 'nowrap';
+    fila.style.justifyContent = 'center';
+    fila.style.flexDirection = 'row';
+
+    // Materias del semestre
+    const materiasDelSem = materias.filter(m => m.semestre === sem);
+
+    materiasDelSem.forEach(m => {
+      const depsFaltan = m.deps.filter(d => !aprobadas.includes(d));
+      const bloqueada = depsFaltan.length > 0;
+      const aprobada = aprobadas.includes(m.id);
+
+      const divMat = document.createElement('div');
+      divMat.className = 'subject ' + m.categoria + (bloqueada ? ' locked' : '');
+      divMat.style.backgroundColor = '#f9f5f0'; // color base
+
+      // Créditos circulares
+      const creditosDiv = document.createElement('div');
+      creditosDiv.className = 'credits';
+      creditosDiv.textContent = m.creditos;
+
+      // Nombre materia y calificación
+      const nombreDiv = document.createElement('div');
+      nombreDiv.className = 'info';
+      nombreDiv.textContent = m.nombre + (calificaciones[m.id] !== undefined ? ` (${calificaciones[m.id]})` : '');
+      if (aprobada) nombreDiv.classList.add('aprobada');
+
+      // Icono para ingresar calificación
+      const iconCal = document.createElement('span');
+      iconCal.className = 'calificacion-icon';
+      iconCal.textContent = '📝';
+      iconCal.style.cursor = bloqueada ? 'not-allowed' : 'pointer';
+      iconCal.onclick = (e) => {
+        e.stopPropagation();
+        if (!bloqueada) ingresarCalificacion(m.id);
+      };
+
+      // Icono para ver temario
+      const iconTem = document.createElement('span');
+      iconTem.className = 'temario';
+      iconTem.textContent = '📄';
+      iconTem.onclick = (e) => {
+        e.stopPropagation();
+        showTemario(m.temario);
+      };
+
+      divMat.appendChild(creditosDiv);
+      divMat.appendChild(nombreDiv);
+      divMat.appendChild(iconCal);
+      divMat.appendChild(iconTem);
+
+      fila.appendChild(divMat);
     });
-    contMaterias.textContent = totalMat;
-    contCreditos.textContent = totalCred.toFixed(1);
-    promedioEl.textContent = '--'; // Aquí podrías poner promedio calculado si quieres
-  }
 
-  // Renderizar la malla en dos filas: 1-5 y 6-10
-  function renderMalla() {
-    mallaEl.innerHTML = '';
-
-    // Crear contenedores fila 1 (semestres 1-5) y fila 2 (semestres 6-10)
-    const fila1 = crearElemento('div', 'fila');
-    const fila2 = crearElemento('div', 'fila');
-
-    // Crear tarjetas semestre 1-10
-    for(let s=1; s<=10; s++) {
-      const semestreCard = crearElemento('div', 'semestre-card');
-      const title = crearElemento('div', 'semestre-title', `Semestre ${s}`);
-      semestreCard.appendChild(title);
-
-      // Filtrar materias de semestre s y ordenarlas por nombre
-      const materiasSem = materias.filter(m => m.semestre === s)
-                                 .sort((a,b) => a.nombre.localeCompare(b.nombre));
-      
-      materiasSem.forEach(materia => {
-        const subject = crearElemento('div', 'subject '+materia.categoria);
-        subject.dataset.id = materia.id;
-
-        // Círculo créditos
-        const credits = crearElemento('div', 'credits', materia.creditos.toString());
-
-        // Nombre materia
-        const info = crearElemento('div', 'info', materia.nombre);
-
-        // Marcar si aprobada
-        if (aprobadas.has(materia.id)) {
-          info.classList.add('aprobada');
-        }
-
-        // Ícono temario
-        const temarioIcon = crearElemento('span', 'temario', '📋');
-        temarioIcon.title = 'Ver temario';
-        temarioIcon.onclick = (e) => {
-          e.stopPropagation();
-          showTemario(materia);
-        };
-
-        subject.appendChild(credits);
-        subject.appendChild(info);
-        subject.appendChild(temarioIcon);
-
-        // Click para marcar aprobada
-        subject.onclick = () => {
-          if (aprobadas.has(materia.id)) {
-            aprobadas.delete(materia.id);
-          } else {
-            aprobadas.add(materia.id);
-          }
-          actualizarResumen();
-          renderMalla();
-        };
-
-        semestreCard.appendChild(subject);
-      });
-
-      // Agregar a la fila correspondiente
-      if (s <= 5) fila1.appendChild(semestreCard);
-      else fila2.appendChild(semestreCard);
-    }
-
-    mallaEl.appendChild(fila1);
-    mallaEl.appendChild(fila2);
-  }
+    card.appendChild(fila);
+    cont.appendChild(card);
+  });
 
   actualizarResumen();
-  renderMalla();
+}
+
+function ingresarCalificacion(id) {
+  let cal = prompt('Ingresa la calificación (0-10) para la materia:');
+  if (cal === null) return; // Cancelado
+  cal = parseFloat(cal);
+  if (isNaN(cal) || cal < 0 || cal > 10) {
+    alert('Calificación inválida, debe ser un número entre 0 y 10.');
+    return;
+  }
+  calificaciones[id] = cal;
+  if (cal >= 6) {
+    if (!aprobadas.includes(id)) aprobadas.push(id);
+  } else {
+    // Si se baja la calificación y está aprobada, quitar de aprobadas
+    const idx = aprobadas.indexOf(id);
+    if (idx > -1) aprobadas.splice(idx, 1);
+  }
+  render();
+}
+
+function showTemario(texto) {
+  const modal = document.getElementById('modal');
+  document.getElementById('temarioContent').textContent = texto;
+  modal.style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+function actualizarResumen() {
+  const contMat = document.getElementById('cont-materias');
+  const contCred = document.getElementById('cont-creditos');
+  const contProm = document.getElementById('promedio');
+
+  contMat.textContent = aprobadas.length;
+  let sumaCred = 0;
+  let sumaCal = 0;
+  aprobadas.forEach(id => {
+    const mat = materias.find(m => m.id === id);
+    if (mat && calificaciones[id] !== undefined) {
+      sumaCred += mat.creditos;
+      sumaCal += calificaciones[id];
+    }
+  });
+  contCred.textContent = sumaCred;
+  contProm.textContent = aprobadas.length ? (sumaCal / aprobadas.length).toFixed(2) : '--';
+}
+
+// Cerrar modal al hacer clic fuera del contenido
+document.getElementById('modal').onclick = e => {
+  if (e.target.id === 'modal') closeModal();
+}
+  render();
 </script>
 </body>
 </html>
