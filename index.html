@@ -92,9 +92,14 @@
       margin-top: 0;
       font-size: 18px;
     }
-    .modal-content p {
+    .modal-content ul {
+      margin: 10px 0 0 20px;
+      padding: 0;
+    }
+    .modal-content ul li {
       font-size: 14px;
       color: #444;
+      margin-bottom: 6px;
     }
     .cerrar {
       position: absolute;
@@ -124,7 +129,7 @@
     <div class="modal-content">
       <span class="cerrar" onclick="cerrarModal()">✖</span>
       <h2 id="titulo-temario"></h2>
-      <p id="contenido-temario"></p>
+      <ul id="lista-temario"></ul>
     </div>
   </div>
 
@@ -220,7 +225,7 @@
       div.innerHTML = `
         <h3>${m.nombre}</h3>
         <div class="creditos">${m.creditos}</div>
-        <div class="icono" onclick="abrirTemario(event, '${m.nombre}', '${m.temario}')">📄</div>
+        <div class="icono" onclick="abrirTemario(event, '${m.id}')">📄</div>
         <div class="palomita" onclick="toggleCursada(event, '${m.id}')">✔️</div>
       `;
       div.addEventListener("dblclick", ()=>resaltarDependencias(m.id));
@@ -251,10 +256,19 @@
     actualizarDisponibilidad();
   }
 
-  function abrirTemario(e, nombre, contenido){
+  function abrirTemario(e, id){
     e.stopPropagation();
-    document.getElementById("titulo-temario").innerText = nombre;
-    document.getElementById("contenido-temario").innerText = contenido;
+    const materia = materias.find(m => m.id === id);
+    document.getElementById("titulo-temario").innerText = materia.nombre;
+
+    const lista = document.getElementById("lista-temario");
+    lista.innerHTML = "";
+    materia.temario.forEach(item=>{
+      const li = document.createElement("li");
+      li.innerText = item;
+      lista.appendChild(li);
+    });
+
     document.getElementById("modal").style.display = "flex";
   }
 
@@ -280,4 +294,4 @@
 </body>
 </html>
 
- 
+  
