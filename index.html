@@ -112,26 +112,78 @@
   </div>
 
 <script>
-const materias = [
-  { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, 
-    temario:['Axiomas de los números reales y complejos, funciones y límites.','Cálculo Diferencial y sus aplicaciones.','Cálculo Integral y sus aplicaciones.','Sucesiones y Series.'], 
-    semestre:1, deps:[], categoria:'matematicas' }, 
-  { id:'algebra', nombre:'Álgebra Lineal', creditos:7.5, 
-    temario:['Sistemas de ecuaciones lineales','Espacios vectoriales','Transformaciones lineales','Valores propios y vectores propios','Espacios con producto interior'], 
-    semestre:1, deps:[], categoria:'matematicas' }, 
-  { id:'biocel', nombre:'Biología Celular', creditos:7.5, 
-    temario:['Fundamentos físicos y químicos.','Estructura celular.','Almacenamiento y expresión de la información genética.','Función celular.','Bases de fisiología y anatomía.'], 
-    semestre:1, deps:[], categoria:'biologicas' }, 
-  { id:'quimica', nombre:'Química Orgánica', creditos:7.5, 
-    temario:['Introducción a la Química Orgánica.','Hidrocarburos.','Derivados de los hidrocarburos.','Carbohidratos.','Aminoácidos y proteínas'], 
-    semestre:1, deps:[], categoria:'biologicas' },
-  { id:'metrologia', nombre:'Metrología', creditos:6.5, 
-    temario:['Generalidades.','Mediciones Eléctricas.','Mediciones Mecánicas.','Mediciones de Temperatura.'], 
-    semestre:1, deps:[], categoria:'electronica' }, 
-  { id:'bioetica', nombre:'Bioética', creditos:4.5, 
-    temario:['Campo teórico de la bioética.','Dilemas bioéticos.','Bioética y medioambiente.','La cultura tecnocientífica.'], 
-    semestre:1, deps:[], categoria:'sociales' }
-];
+  const materias = [
+   { id:'calculo', nombre:'Cálculo Dif. e Integral', creditos:9, temario:['Axiomas de los números reales y complejos, funciones y límites.','Cálculo Diferencial y sus aplicaciones.','Cálculo Integral y sus aplicaciones.','Sucesiones y Series.'], semestre:1, deps:[], categoria:'matematicas' }, 
+{ id:'algebra', nombre:'Álgebra Lineal', creditos:7.5, temario:['Sistemas de ecuaciones lineales','Espacios vectoriales','Transformaciones lineales','Valores propios y vectores propios','Espacios con prducto interior'], semestre:1, deps:[], categoria:'matematicas' }, 
+{ id:'biocel', nombre:'Biología Celular', creditos:7.5, temario:['Fundamentos físicos y químicos.','Estructura celular.','Almacenamiento y expresión de la información genética.','Función celular.','Bases de fisiología y anatomía.'], semestre:1, deps:[], categoria:'biologicas' }, 
+{ id:'quimica', nombre:'Química Orgánica', creditos:7.5, temario:['Introducción a la Química Orgánica.','Hidrocarburos.','Derivados de los hidrocarburos.','Carbohidratos.','Aminoácidos y proteínas'], semestre:1, deps:[], categoria:'biologicas' },
+{ id:'metrologia', nombre:'Metrología', creditos:6.5, temario:['Generalidades.','Mediciones Eléctrica.','Mediciones Mecánicas.','Mediciones de Temperatura.'], semestre:1, deps:[], categoria:'electronica' }, 
+{ id:'bioetica', nombre:'Bioética', creditos:4.5, temario:['Campo teórico de la bioética.','Dilemas bioéticos.','Bioética y medioambiente.','La cultura tecnocientífica.'], semestre:1, deps:[], categoria:'sociales' }, 
+
+{ id:'herramientas', nombre:'Herramientas Computacionales', creditos:6, temario:['Fundamentos básicos de los lenguajes de programación.','Uso de herramientas básicas en los leguajes de programación.','Fundamentos del Dibujo e Introducción al CAD,CAM,CAE.','Diseño en 2D.','Diseño en 3D y Documentación.'], semestre:2, deps:[], categoria:'programacion' }, 
+{ id:'vectorial', nombre:'Cálculo Vectorial', creditos:9, temario:['Funciones reales de varias variables.','Cálculo diferencial de funciones reales de varias variables.','Cálculo integral de funciones reales de varias variables.','Funciones vectoriales de variable real.','Cálculo vectorial.'], semestre:2, deps:['calculo'], categoria:'matematicas' }, 
+{ id:'anatomia', nombre:'Anatomía', creditos:7.5, temario:['Introducción.','Historia.','Generalidades.','Osteología.','Artrología.','Miología.','Sistema nervioso.','Corazón y grandes vasos.'], semestre:2, deps:[], categoria:'biologicas' }, 
+{ id:'fisica', nombre:'Fundamentos de Física para la Ingeniería', creditos:9, temario:['Cinemática.','Las Leyes de Newton y sus aplicaciones.','Leyes de conservación.','Sistemas de partículas.','Aplicaciones de la Mecánica a la biónica.'], semestre:2, deps:[], categoria:'fisicas' }, 
+{ id:'ingles1', nombre:'Inglés 1', creditos:3, temario:['Consolidación gramatical del tiempo presente.','Consolidación gramatical del tiempo pasado.','Consolidación gramatical del tiempo futuro y verbos modales.'], semestre:2, deps:[], categoria:'idiomas' }, 
+{ id:'biomol', nombre:'Biología Molecular', creditos:7.5, temario:['Introducción a la biología molecular.','Replicación del ADN.','Expresión y regulación genética en células procarióticas.','Expresión y regulación genética en células eucarióticas.','Bioinformática y técnicas de biología molecular.'], semestre:2, deps:['biocel'], categoria:'biologicas' }, 
+{ id:'ecuaciones', nombre:'Ecuaciones Diferenciales', creditos:7.5, temario:['Introducción a las ecuaciones diferenciales y a las ecuaciones de primer orden.','Ecuaciones diferenciales de orden superior.','Resolución de ecuaciones diferenciales mediante series de potencias.','La Transformada de Laplace.','Sistemas de ecuaciones diferenciales.'], semestre:2, deps:['calculo','algebra'], categoria:'matematicas' }, 
+
+{ id:'poo', nombre:'Programación Orientada a Objetos', creditos:6, temario:['Fundamentos del lenguaje de programación.','Sentencias de control.','Clases y objetos.','Herencia y polimorfismo.','Concepto de polimorfismo.','Programación Orientada a Objetos con Java.'], semestre:3, deps:[], categoria:'programacion' }, 
+{ id:'electro', nombre:'Fund. Teoría Electromagnética', creditos:9, temario:['Electrostática.','Corriente eléctrica.','Magnetostática.'], semestre:3, deps:['fisica'], categoria:'fisicas' }, 
+{ id:'desarrollo', nombre:'Desarrollo Sostenible', creditos:6, temario:['Introducción a las ciencias del ambiente y la sustentabilidad.','El equilibrio entre población suelo agua y agricultura.','Contaminación, contaminantes y medio ambiente.','Recursos naturales, biota, energía, tierra, residuos.','Marco legal y sistemas de gestión y auditoría de los recursos naturales.'], semestre:3, deps:[], categoria:'sociales' }, 
+{ id:'fisicoq', nombre:'Fisicoquímica', creditos:6, temario:['Energía y la primera ley de la termodinámica; termoquímica.','Segunda y tercera leyes de la termodinámica.','Equilibrio químico.','Soluciones.','Electroquímica.'], semestre:3, deps:['quimica'], categoria:'biologicas' }, 
+{ id:'fisiologia', nombre:'Fisiología', creditos:4.5, temario:['Introducción.','Medio Interno y Sangre.','Función Cardiaca.','Fisiología de la Respiración.','Fisiología muscular.','Función Renal.','Fisiología del Sistema Nervioso.'], semestre:3, deps:['anatomia'], categoria:'biologicas' }, 
+{ id:'circuitos', nombre:'Teoría de los Circuitos', creditos:9, temario:[], semestre:3, deps:[], categoria:'electronica' }, 
+{ id:'ingles2', nombre:'Inglés 2', creditos:3, temario:['Verbos modales; verbos en infinitivo y gerundio.','Voz pasiva y discurso indirecto.','Concicionales y clausulas relativas'], semestre:3, deps:['ingles1'], categoria:'idiomas' }, 
+
+{ id:'bioestadistica', nombre:'Bioestadística', creditos:9, temario:['Introducción a la bioestadística.','Elementos de probabilidad.','Técnicas de inferencia estadística.','Análisis de varianza y regresión lineal.','Temas complementarios.'], semestre:4, deps:[], categoria:'programacion' }, 
+{ id:'bioquimica', nombre:'Bioquímica', creditos:6, temario:['Aminoácidos, proteínas y su metabolismo.','Carbohidratos y las rutas del metabolismo.','Lípidos y su metabolismo.','Ácidos nucleicos.','Bioenergética.'], semestre:4, deps:['biomol','quimica'], categoria:'biologicas' }, 
+{ id:'fundmat', nombre:'Fund. Matemáticos Ing.', creditos:4.5, temario:['Funciones de variable compleja.','Derivada de funciones complejas.','Integración de una variable compleja.','Cálculo de integrales.','Series y transformada de Fourier y Zeta.'], semestre:4, deps:['vectorial','ecuaciones'], categoria:'matematicas' }, 
+{ id:'ondas', nombre:'Ondas Electromagnéticas y Sistemas', creditos:7.5, temario:['Ley de inducción de Faraday.','Ecuaciones de Maxwell.','Ondas electromagnéticas.','Radiación.'], semestre:4, deps:['electro'], categoria:'fisicas' }, 
+{ id:'calidad', nombre:'Sist. Gestión de Calidad', creditos:4.5, temario:['La calidad en los procesos productivos.','Administración orientada a procesos Kaizen.','La Reingeniería.','ISO 9000.'], semestre:4, deps:[], categoria:'sociales' }, 
+{ id:'analisis', nombre:'Análisis Numérico', creditos:9, temario:['Errores y solución de ecuaciones no lineales de una variable.','Matrices, sistema de ecuaciones lineales y sistemas no lineales.','Aproximación polinomial e interpolación.','Diferenciación e integración numérica.','Ecuaciones diferenciales ordinarias.'], semestre:4, deps:['ecuaciones','fundmat'], categoria:'matematicas' }, 
+{ id:'dispositivos', nombre:'Dispositivos Electrónicos', creditos:6, temario:['Fundamentos de Diodos y Aplicaciones.','Fundamentos de transistores BJT, JFET y MOSFET.','Fundamentos de Amplificadores Operacionales.','Fundamentos de Optoelectrónica.','Aplicaciones de Circuitos Integrados de uso específico.'], semestre:4, deps:['metrologia'], categoria:'electronica' }, 
+{ id:'ingles3', nombre:'Inglés 3', creditos:3, temario:['Consolidación gramatical: vocabulario.','Consolidación gramatical: lectura y escritura.','Consolidación gramatical: práctica auditiva y expresión oral.'], semestre:4, deps:['ingles2'], categoria:'idiomas' }, 
+
+{ id:'biognosis', nombre:'Biógnosis', creditos:7.5, temario:['Modelado de Sistemas Físicos.','Simulación y Análisis de la respuesta del sistema.','Metodología para el estudio de sistemas biológicos en la generación de sistemas biomiméticos.','Modelado y simulación de sistemas biológicos.','Diseño, construcción y validación de biomiméticos.'], semestre:5, deps:['bioquimica','fisiologia'], categoria:'biologicas' }, 
+{ id:'optica', nombre:'Física Moderna y Óptica', creditos:7.5, temario:['Óptica geométrica.','Propagación de la luz en medios transparentes.','Polarización.','Interferencia y difracción.','Introducción a la Física Moderna.'], semestre:5, deps:['ondas'], categoria:'fisicas' }, 
+{ id:'analpot', nombre:'Electrónica Analógica y Potencia', creditos:7.5, temario:['Opto-tiristores y sus aplicaciones.','Circuitos de potencia.','Amplificadores con transistores BJT.','Amplificadores con transistores MOSFET.','Aplicaciones de los OP AMPS a filtros activos y amplificadores de instrumentación.'], semestre:5, deps:['circuitos'], categoria:'electronica' }, 
+{ id:'digital', nombre:'Electrónica Digital', creditos:7.5, temario:['Introducción a los sistemas digitales.','Circuitos Combinatorios.','Circuitos Secuenciales.','Máquinas de Estado Finito.','Introducción al diseño RTL (Nivel de Transferencia de Registros).'], semestre:5, deps:['circuitos'], categoria:'electronica' }, 
+{ id:'sensores', nombre:'Sensores y Actuadores', creditos:6, temario:['Introducción a los actuadores.','Actuadores.','Circuitos de interfaz y acondicionamiento de la señal.','Principios físicos del sensado.','Clasificación de los sensores.'], semestre:5, deps:[], categoria:'electronica' }, 
+{ id:'biomag', nombre:'Biomagnetismo', creditos:7.5, temario:['Parámetros magnéticos de las sustancias biológicas.','Efecto de los campos electromagnéticos en organismos vivos.','Campos magnéticos en complejos moleculares.','Aplicaciones de los campos electromagnéticos en la imagenología.','Aplicación terapéutica de los campos electromagnéticos.'], semestre:5, deps:['fisicoq','electro'], categoria:'fisicas' }, 
+{ id:'mecanismos', nombre:'Mecanismos Biomiméticos', creditos:6, temario:['Introducción a los mecanismos biomiméticos.','Mecanismos biomiméticos.','Análisis cinemático, estático y dinámico de mecanismos.','Transmisión de potencia.'], semestre:5, deps:[], categoria:'fisicas' }, 
+
+
+{ id:'biofisica', nombre:'Biofísica', creditos:6, temario:['El hombre como sistema integrado.','Bases físicas de los fenómenos bioeléctricos.','Biofísica de los sentidos.','Física Medica.','Biofísica cardiaca y respiratoria. '], semestre:6, deps:['biognosis','biomag'], categoria:'fisicas' }, 
+{ id:'liderazgo', nombre:'Liderazgo y Emprendedores', creditos:4.5, temario:['Liderazgo.','Desarrollo de habilidades intra e interpersonales.','El emprendedor.','Trabajo en equipo','Conflicto y negociación.'], semestre:6, deps:[], categoria:'sociales' }, 
+{ id:'biomateriales', nombre:'Biomateriales', creditos:7.5, temario:['Introducción a los Materiales.','Caracterización de Biomateriales.','Estructura y propiedades de los Biomateriales.','Sustitución de Tejidos.','Tópicos Selectos.'], semestre:6, deps:['bioquimica'], categoria:'biologicas' }, 
+{ id:'control', nombre:'Teoría del Control', creditos:7.5, temario:['Fundamentos de sistemas de control.','Diseño de controladores y compensadores analógicos.','Fundamentos del control digital.','Diseño de controladores y compensadores digitales.'], semestre:6, deps:['fundmat','analisis'], categoria:'fisicas' }, 
+{ id:'imagenes', nombre:'Procesamiento de Imágenes', creditos:6, temario:['Fundamentos de Procesamiento Digital de Imágenes.','Mejoramiento de Imagen (Preprocesamiento y Filtrado).','Transformaciones sobre Imágenes.','Extracción y Restauración de Regiones.','Análisis de Imágenes.'], semestre:6, deps:['poo'], categoria:'programacion' }, 
+{ id:'programables', nombre:'Dispositivos Programables', creditos:6, temario:['Estructura y operación de un microontrolador.','Interfaz.','Temporización.','Convertidor analógico-digital.','Protocolos de comunicación.'], semestre:6, deps:['digital'], categoria:'programacion' }, 
+{ id:'esfuerzos', nombre:'Análisis de Esfuerzos', creditos:6, temario:['Bioestática comportamiento biomecánico.','Elementos biomecánicos sometidos a carga axial.','Esfuerzos de corte en elementos biomecánicos.','Flexión en elementos biomecánicos.','Elementos biomecánicos sometidos a cargas combiadas.'], semestre:6, deps:[], categoria:'fisicas' }, 
+
+{ id:'proyectos', nombre:'Investigación y Desarrollo', creditos:4.5, temario:['Los proyectos en Ingeniería Biónica .','Los estudios del proceso de investigación para un proyecto.','Desarrollo de un proyecto.'], semestre:7, deps:[], categoria:'sociales' }, 
+{ id:'neurodifuso', nombre:'Control Neurodifuso', creditos:6, temario:['Sistemas Difusos.','Sistemas Neuronales.','Control Neurodifuso.'], semestre:7, deps:['control','programables'], categoria:'electronica' }, 
+{ id:'psbiologicas', nombre:'Procesamiento de Señales Biológicas', creditos:6, temario:['Fundamentos de procesamiento de las señales biológicas.','Filtros digitales.','Análisis de las señales en el dominio del tiempo y frecuencia.','Análisis multidimensional.'], semestre:7, deps:['biofisica'], categoria:'biologicas' }, 
+{ id:'bioinstr', nombre:'Bioinstrumentación', creditos:7.5, temario:['Introducción a la bioinstrumentación y técnicas de medición.','Instrumentos para la medición de variables bioeléctricas.','Instrumentos para la medición de variables biomecánicas.','Instrumentos para la medición de variables de capacidad mecánica vibraciones.','Instrumentos para la generación de tensiones, corrientes /o vibraciones.'], semestre:7, deps:['psbiologicas'], categoria:'biologicas' }, 
+{ id:'modelado', nombre:'Modelado y Control de Sistemas Biónicos', creditos:6, temario:['Análisis dimensional y relaciones dimensionales.','Sistema biónico.','Control robusto en sistemas biónicos.','Diseño y controladores robustos.','Control robusto en sistemas biónicos.'], semestre:7, deps:['neurodifuso'], categoria:'electronica' }, 
+{ id:'manufactura', nombre:'Manufactura de Biomiméticos', creditos:6, temario:['Introducción a los procesos de manufactura.','Procesos de manufactura con arranque de viruta y programación CNC.','Tratamientos térmicos, recubrimientos acabados.','Procesos de modelado unión.','Procesos avanzados de maquinado prototipado rápido.'], semestre:7, deps:['mecanismos'], categoria:'electronica' }, 
+{ id:'patrones', nombre:'Reconocimiento de Patrones', creditos:6, temario:['Introducción.','Diseño de un sistema de reconocedor de patrones.','Clasificador de tipo lineal y no lineal.','Métodos estocásticos.','Algoritmos de Clustering.'], semestre:7, deps:['imagenes'], categoria:'programacion' }, 
+
+{ id:'opt1', nombre:'Optativa 1', creditos:6, temario:[], semestre:8, deps:[], categoria:'otros' }, 
+{ id:'opt2', nombre:'Optativa 2', creditos:6, temario:[], semestre:8, deps:[], categoria:'otros' }, 
+{ id:'normas', nombre:'Normatividad y Gestión', creditos:4.5, temario:['Gestión de la tecnología.','Protección transferencia de tecnología.','Casos de legislación en biónica.'], semestre:8, deps:[], categoria:'sociales' }, 
+{ id:'investigacion', nombre:'Metodología de Investigación', creditos:4.5, temario:['Método científico.','Planteamiento del problema.','Elaboración del protocolo de proyecto de trabajo terminal.','Presentación de trabajos científicos.'], semestre:8, deps:[], categoria:'sociales' }, 
+{ id:'biomecanica', nombre:'Biomecánica', creditos:6, temario:['Fundamentos de la biomecánica.','Biomécanica articular.','Biomécanica del movimiento.','Biomecánica de los fluidos corporales.','Diseño de espacios de trabajo.'], semestre:8, deps:['esfuerzos'], categoria:'fisicas' }, 
+{ id:'bioelectronica', nombre:'Bioelectrónica', creditos:6, temario:['Bioelectrónica, origen y tipos de bioseñales.','Estimulación eléctrica funcional.','Potenciales evocados.','Interfaces electrónicas.','Procesos biotecnológicos.'], semestre:8, deps:['patrones'], categoria:'electronica' }, 
+
+{ id:'opt3', nombre:'Optativa 3', creditos:6, temario:[], semestre:9, deps:['opt2'], categoria:'otros' }, 
+{ id:'biorobotica', nombre:'Biorobótica', creditos:6, temario:['Introducción a la robótica.','Principios generales en el diseño biológico motriz.','Cinemática y dinámica de un robot biomimetico.','Técnicas de locomoción.','Tópicos emergentes de locomoción en sistemas vivos.'], semestre:9, deps:['modelado'], categoria:'electronica' }, 
+{ id:'trabajoi', nombre:'Trabajo Terminal I', creditos:7.5, temario:['Estado del arte y marco teórico.','Normas internacionales.','Análisis de requerimientos.','Diseño detallado y documentación.','Defensa del diseño propuesto.'], semestre:9, deps:['proyectos'], categoria:'otros' }, 
+
+{ id:'trabajoii', nombre:'Trabajo Terminal II', creditos:7.5, temario:['Lineamientos generales de la dinámica de trabajo.','Administración del proyecto.','Documentación del proyecto.','Preparación de la defensa oral.','Análisis y discusión de resultados.'], semestre:10, deps:['trabajoi'], categoria:'otros' }
+     ];
+
 
 // Recuperar materias cursadas del localStorage
 let cursadas = JSON.parse(localStorage.getItem("cursadas")) || [];
